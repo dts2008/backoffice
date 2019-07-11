@@ -23,10 +23,8 @@ const store = new Vuex.Store({
     }
   },
   actions: {
-    LOGIN: (context, login, password) => {
-      console.log(login, password)
+    LOGIN: (context) => {
       context.commit('SET_LOGGEDIN', true)
-      router.push({ name: 'home' })
     },
     LOGOUT: (context) => {
       context.commit('SET_LOGGEDIN', false)

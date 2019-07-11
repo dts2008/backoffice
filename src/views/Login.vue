@@ -2,14 +2,14 @@
     <v-content>
         <v-snackbar v-model="snackbar" :timeout="2000" top color="error">
             <span>
-                Awesome! You added a new project
+                {{ $t('loginissue') }}
             </span>
             <v-btn flat color="white" @click="snackbar = false">Close</v-btn>
         </v-snackbar>
       <v-container fluid fill-height>
         <v-layout align-center justify-center>
           <v-flex xs12 sm8 md4>
-            <v-form @submit.prevent="authenticate()" ref="login">
+            <v-form @submit.prevent="authenticate()" ref="form">
                 <v-card class="elevation-12">
                 <v-toolbar dark color="primary">
                     <v-toolbar-title>Login form</v-toolbar-title>
@@ -17,11 +17,11 @@
                 </v-toolbar>
                 <v-card-text>
                     <v-text-field prepend-icon="person" name="login" label="Login" type="text" v-model="login" :rules="rulesLogin"></v-text-field>
-                    <v-text-field prepend-icon="lock" name="password" label="Password" id="password" type="password" v-model="password" :rules="rulesPass"></v-text-field>
+                    <v-text-field prepend-icon="lock" name="password" label="Password" type="password" v-model="password" :rules="rulesPass"></v-text-field>
                 </v-card-text>
                 <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn color="primary" type="submit">Login</v-btn>
+                    <v-btn color="primary" type="submit" :loading="loading">Login</v-btn>
                 </v-card-actions>
                 </v-card>
             </v-form>
@@ -32,10 +32,12 @@
 </template>
 
 <script>
+import api from '@/api/api'
 
 export default {
   data () {
     return {
+      loading: false,
       snackbar: false,
       login: '',
       password: '',
@@ -51,14 +53,34 @@ export default {
       ]
     }
   },
+  computed: {
+
+  }
+  ,
   methods: {
     authenticate () {
-      if (this.$refs.login.validate())
+      if (this.$refs.form.validate())
       {
-        this.$store.dispatch('LOGIN', this.login, this.password)
-        //this.snackbar = true;
-      }
-      
+        this.loading = true;
+
+        api.authorization(this.login, this.password)
+          .then((result) => {
+              
+              this.loading = false;
+              
+              if (result) {
+                //router.repalce({ name: 'home' })
+                //this.$router.push({name: 'login'});
+                this.$router.push({ name: 'home' })
+              }
+              else {
+                this.snackbar = true;
+              }
+            }  
+          ).catch((e) => {
+            console.log('authorization - LOG catch');
+          });
+      } 
     }
   }
 }
