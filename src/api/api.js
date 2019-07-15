@@ -21,18 +21,30 @@ class API {
                 result.data &&
                 result.data.token &&
                 result.data.token.length >= 32) {
-                store.dispatch('LOGIN');
+                store.dispatch('LOGIN', result.data.token);
                 return true;
             }
-            
-            //console.log(result);
-            //console.log(result.data);
-            //console.log(result.data.token);
-            //console.log(result.data.explanation);
+                        
+            return false;
+        } catch (e) {
+            console.log(e);
+            return false;
+        }
+    }
 
-            
-            //this.$store.dispatch('LOGIN');
-            
+    async getpartners()
+    {
+        try {
+            const result = await this.axios.get(this.apiHost + '/api2/getpartners?token=' + store.getters.GETTOKEN)
+
+            if (result &&
+                result.error_code &&
+                result.error_code == 0 &&
+                result.data) {
+                store.dispatch('PARTNERS', result.data);
+                return true;
+            }
+                        
             return false;
         } catch (e) {
             console.log(e);
