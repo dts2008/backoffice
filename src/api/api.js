@@ -17,9 +17,9 @@ class API {
         try {
             const result = await this.axios.get(this.apiHost + '/api2/auth?login=' + login + 'password=' + this.md5(password))
 
-            if (typeof result &&
-                typeof result.data &&
-                typeof result.data.token &&
+            if (result &&
+                result.data &&
+                result.data.token &&
                 result.data.token.length >= 32) {
                 store.dispatch('LOGIN');
                 return true;
