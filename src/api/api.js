@@ -41,7 +41,27 @@ class API {
                 result.error_code &&
                 result.error_code == 0 &&
                 result.data) {
-                store.dispatch('PARTNERS', result.data);
+                    store.commit('SET_PARTNERS', result.data);
+                return true;
+            }
+                        
+            return false;
+        } catch (e) {
+            console.log(e);
+            return false;
+        }
+    }
+
+    async getusers()
+    {
+        try {
+            const result = await this.axios.get(this.apiHost + '/api2/getusers?token=' + store.getters.GETTOKEN)
+
+            if (result &&
+                result.error_code &&
+                result.error_code == 0 &&
+                result.data) {
+                    store.commit('SET_USERS', result.data);
                 return true;
             }
                         

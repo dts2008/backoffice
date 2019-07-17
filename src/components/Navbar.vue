@@ -80,7 +80,7 @@ export default {
             links : [
                 { icon: "account_box", text: "Partners", route: "/"},
                 { icon: "folder", text: "My Project", route: "/projects"},
-                { icon: "person", text: "Team", route: "/team"},
+                { icon: "person", text: "Users", route: "/users"},
                 //{ icon: "person", text: "Login", route: "/login"},
             ],
             snackbar: false,

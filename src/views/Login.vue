@@ -69,9 +69,9 @@ export default {
               this.loading = false;
               
               if (result) {
-                //router.repalce({ name: 'home' })
+                //router.repalce({ name: 'Partners' })
                 //this.$router.push({name: 'login'});
-                this.$router.push({ name: 'home' })
+                this.$router.push({ name: 'Partners' })
               }
               else {
                 this.snackbar = true;
