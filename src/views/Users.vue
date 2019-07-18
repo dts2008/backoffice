@@ -15,7 +15,7 @@
       </template>
     </v-toolbar>
 
-    <v-data-table :headers="headers" :items="desserts">
+    <v-data-table :headers="headers" :items="desserts" :loading="loading">
       <template v-slot:items="props">
         <td>{{ props.item.name }}</td>
         <td class="text-xs-right">{{ props.item.contacts }}</td>
@@ -41,10 +41,12 @@
 </div>
 </template>
 
-
 <script>
+import api from '@/api/api'
+
   export default {
     data: () => ({
+      loading: false,
       dialog: false,
       headers: [
         { text: 'Name', align: 'left', value: 'name' },
@@ -75,6 +77,9 @@
     computed: {
       formTitle () {
         return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
+      },
+      users () {
+        return this.$store.getters.USERS
       }
     },
 
@@ -85,11 +90,26 @@
     },
 
     created () {
-      this.initialize()
+      //this.initialize()
+      this.fillusers()
     },
 
     methods: {
+      fillusers()
+      {
+        this.loading = true;
+        
+        console.log(this.$api);
+        api.getusers().then((result) => {
+              this.loading = false;
+            }  
+          ).catch((e) => {
+            console.log('get users - logs catch');
+          });
+      },
+
       initialize () {
+
         this.desserts = [
           {
             name: 'Frozen Yogurt',

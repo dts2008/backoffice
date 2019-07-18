@@ -52,10 +52,10 @@ class API {
         }
     }
 
-    async getusers()
+    async getusers(pagesize)
     {
         try {
-            const result = await this.axios.get(this.apiHost + '/api2/getusers?token=' + store.getters.GETTOKEN)
+            const result = await this.axios.get(this.apiHost + '/api2/getusers?token=' + store.getters.GETTOKEN + '&pagesize=' + pagesize)
 
             if (result &&
                 result.error_code &&
