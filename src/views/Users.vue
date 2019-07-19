@@ -20,7 +20,7 @@
       </v-btn>
     </v-toolbar>
 
-    <v-data-table :headers="headers" :items="users" :loading="loading">
+    <v-data-table :headers="headers" :items="users" :loading="loading" :total-items="totalitems" :pagination.sync="pagination" @update:pagination="updatepagination">
       <template v-slot:items="props">
         <td>{{ props.item.name }}</td>
         <td class="text-xs-right">{{ props.item.contacts }}</td>
@@ -51,6 +51,8 @@ import api from '@/api/api'
 
   export default {
     data: () => ({
+      totalitems: 0,
+      pagination: {},
       loading: false,
       dialog: false,
       expand: false,
@@ -85,8 +87,33 @@ import api from '@/api/api'
         const users = this.$store.getters.USERS;
         if (users && users.items)
         {
-          console.log(users.items)
-          return users.items;
+            this.totalitems = users.total_items
+
+            console.log(this.pagination.sortBy)
+            
+            // if (this.pagination.sortBy) {
+                
+            //     const sortedUser =  users.items.sort((a, b) => {
+            //         const sortA = a[this.pagination.sortB]
+            //         const sortB = b[this.pagination.sortB]
+              
+            //         if (this.pagination.descending) {
+            //             if (sortA < sortB) return 1
+            //             if (sortA > sortB) return -1
+            //             return 0
+            //         }
+                    
+            //         if (sortA < sortB) return -1
+            //         if (sortA > sortB) return 1
+                    
+            //         return 0
+            //     })
+
+            //     console.log(sortedUser)
+            //     return sortedUser;
+            // }
+
+            return users.items;
         }
 
         return []
@@ -108,11 +135,19 @@ import api from '@/api/api'
     },
 
     methods: {
+      updatepagination()
+      {
+          //console.log(this.pagination.sortBy);
+          //this.fillusers()
+      },
       fillusers()
       {
         this.loading = true;
         
-        api.getusers().then((result) => {
+        const { sortBy, descending, page, rowsPerPage } = this.pagination
+        //const { page, rowsPerPage } = this.pagination
+        
+        api.getusers(page, rowsPerPage).then((result) => {
               this.loading = false;
               console.log('get users - success');
             }  
