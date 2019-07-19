@@ -37,6 +37,7 @@ class API {
         try {
             const result = await this.axios.get(this.apiHost + '/api2/getpartners?token=' + store.getters.GETTOKEN)
 
+            console.log('result:' + result)
             if (result &&
                 result.error_code &&
                 result.error_code == 0 &&
@@ -58,10 +59,12 @@ class API {
             const result = await this.axios.get(this.apiHost + '/api2/getusers?token=' + store.getters.GETTOKEN + '&pagesize=' + pagesize)
 
             if (result &&
-                result.error_code &&
-                result.error_code == 0 &&
-                result.data) {
-                    store.commit('SET_USERS', result.data);
+                result.data &&
+                result.data.error_code === 0 &&
+                result.data.data &&
+                result.data.data.items
+                ) {
+                    store.commit('SET_USERS', result.data.data);
                 return true;
             }
                         

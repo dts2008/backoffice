@@ -10,12 +10,17 @@
       <v-toolbar-title>Users</v-toolbar-title>
       <v-divider class="mx-2" inset vertical></v-divider>
       <v-spacer></v-spacer>
-      <template v-slot:activator="{ on }">
-          <v-btn color="primary" dark class="mb-2" v-on="on">New Item</v-btn>        
-      </template>
+      
+      <v-btn color="primary" dark @click="fillusers">
+        Refresh
+      </v-btn>
+      
+      <v-btn color="primary" dark>
+        New user
+      </v-btn>
     </v-toolbar>
 
-    <v-data-table :headers="headers" :items="desserts" :loading="loading">
+    <v-data-table :headers="headers" :items="users" :loading="loading">
       <template v-slot:items="props">
         <td>{{ props.item.name }}</td>
         <td class="text-xs-right">{{ props.item.contacts }}</td>
@@ -48,13 +53,14 @@ import api from '@/api/api'
     data: () => ({
       loading: false,
       dialog: false,
+      expand: false,
       headers: [
         { text: 'Name', align: 'left', value: 'name' },
-        { text: 'Contacts', value: 'contacts' },
-        { text: 'Role', value: 'role' },
-        { text: 'Last Activity', value: 'activity' },
-        { text: 'Partners', value: 'partners' },
-        { text: 'Actions', value: 'name', sortable: false }
+        { text: 'Contacts', align: 'right', value: 'contacts' },
+        { text: 'Role', align: 'right', value: 'role' },
+        { text: 'Last Activity', align: 'right', value: 'activity' },
+        { text: 'Partners', align: 'right', value: 'partners' },
+        { text: 'Actions', align: 'right', value: 'name', sortable: false }
       ],
       desserts: [],
       editedIndex: -1,
@@ -75,11 +81,18 @@ import api from '@/api/api'
     }),
 
     computed: {
+      users () {
+        const users = this.$store.getters.USERS;
+        if (users && users.items)
+        {
+          console.log(users.items)
+          return users.items;
+        }
+
+        return []
+      },
       formTitle () {
         return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
-      },
-      users () {
-        return this.$store.getters.USERS
       }
     },
 
@@ -99,9 +112,9 @@ import api from '@/api/api'
       {
         this.loading = true;
         
-        console.log(this.$api);
         api.getusers().then((result) => {
               this.loading = false;
+              console.log('get users - success');
             }  
           ).catch((e) => {
             console.log('get users - logs catch');
@@ -109,79 +122,6 @@ import api from '@/api/api'
       },
 
       initialize () {
-
-        this.desserts = [
-          {
-            name: 'Frozen Yogurt',
-            contacts: 159,
-            role: 6.0,
-            activity: 24,
-            partners: 4.0
-          },
-          {
-            name: 'Ice cream sandwich',
-            contacts: 237,
-            role: 9.0,
-            activity: 37,
-            partners: 4.3
-          },
-          {
-            name: 'Eclair',
-            contacts: 262,
-            role: 16.0,
-            activity: 23,
-            partners: 6.0
-          },
-          {
-            name: 'Cupcake',
-            contacts: 305,
-            role: 3.7,
-            activity: 67,
-            partners: 4.3
-          },
-          {
-            name: 'Gingerbread',
-            contacts: 356,
-            role: 16.0,
-            activity: 49,
-            partners: 3.9
-          },
-          {
-            name: 'Jelly bean',
-            contacts: 375,
-            role: 0.0,
-            activity: 94,
-            partners: 0.0
-          },
-          {
-            name: 'Lollipop',
-            contacts: 392,
-            role: 0.2,
-            activity: 98,
-            partners: 0
-          },
-          {
-            name: 'Honeycomb',
-            contacts: 408,
-            role: 3.2,
-            activity: 87,
-            partners: 6.5
-          },
-          {
-            name: 'Donut',
-            contacts: 452,
-            role: 25.0,
-            activity: 51,
-            partners: 4.9
-          },
-          {
-            name: 'KitKat',
-            contacts: 518,
-            role: 26.0,
-            activity: 65,
-            partners: 7
-          }
-        ]
       },
 
       editItem (item) {
