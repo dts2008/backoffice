@@ -52,7 +52,7 @@ import api from '@/api/api'
   export default {
     data: () => ({
       totalitems: 0,
-      pagination: {},
+      pagination: { rowsPerPage: 10},
       loading: false,
       dialog: false,
       expand: false,
@@ -88,8 +88,6 @@ import api from '@/api/api'
         if (users && users.items)
         {
             this.totalitems = users.total_items
-
-            console.log(this.pagination.sortBy)
             
             // if (this.pagination.sortBy) {
                 
@@ -137,8 +135,7 @@ import api from '@/api/api'
     methods: {
       updatepagination()
       {
-          //console.log(this.pagination.sortBy);
-          //this.fillusers()
+        this.fillusers()
       },
       fillusers()
       {
@@ -147,9 +144,8 @@ import api from '@/api/api'
         const { sortBy, descending, page, rowsPerPage } = this.pagination
         //const { page, rowsPerPage } = this.pagination
         
-        api.getusers(page, rowsPerPage).then((result) => {
+        api.getusers(page, rowsPerPage, sortBy, descending).then((result) => {
               this.loading = false;
-              console.log('get users - success');
             }  
           ).catch((e) => {
             console.log('get users - logs catch');
