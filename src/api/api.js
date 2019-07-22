@@ -32,49 +32,7 @@ class API {
         }
     }
 
-    async getpartners()
-    {
-        try {
-            const result = await this.axios.get(this.apiHost + '/api2/getpartners?token=' + store.getters.GETTOKEN)
-
-            if (result &&
-                result.status == 'OK' &&
-                result.data) {
-                    store.commit('SET_PARTNERS', result.data);
-                return true;
-            }
-                        
-            return false;
-        } catch (e) {
-            console.log(e);
-            return false;
-        }
-    }
-
-    async getusers(current_page, page_size, sort_by, descending)
-    {
-        try {
-            const result = await this.axios.get(this.apiHost + '/api2/get?type=user&token=' + store.getters.GETTOKEN + 
-                '&page_size=' + page_size + '&current_page=' + current_page + '&sort_by=' + sort_by + '&descending=' + descending)
-
-            if (result &&
-                result.data &&
-                result.data.status === 'OK' &&
-                result.data.data &&
-                result.data.data.items
-                ) {
-                    store.commit('SET_USERS', result.data.data);
-                return true;
-            }
-                        
-            return false;
-        } catch (e) {
-            console.log(e);
-            return false;
-        }
-    }
-
-    async get(type, current_page, page_size, sort_by, descending)
+     async get(type, current_page, page_size, sort_by, descending)
     {
         try {
             const result = await this.axios.get(this.apiHost + '/api2/get?type=' + type + '&token=' + store.getters.GETTOKEN + 
@@ -86,7 +44,25 @@ class API {
                 result.data.data &&
                 result.data.data.items
                 ) {
-                    store.commit('SET_USERS', result.data.data);
+                    store.commit('SET_' + type.toUpperCase(), result.data.data);
+                return true;
+            }
+                        
+            return false;
+        } catch (e) {
+            console.log(e);
+            return false;
+        }
+    }
+
+    async delete(type, item)
+    {
+        try {
+            const result = await this.axios.post(this.apiHost + '/api2/delete?type=' + type + '&token=' + store.getters.GETTOKEN, 
+                {'id': item.id}, { headers: {'Content-Type': 'text/plain'} })
+            
+                if (result && result.data.status === 'OK'
+                ) {
                 return true;
             }
                         

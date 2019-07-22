@@ -1,4 +1,5 @@
 {
   "message": "hello i18n !!",
-  "loginissue": "Login or Password is incorrect"
+  "loginissue": "Login or Password is incorrect",
+  "deleteUser": "Do you want to delete {userName}?"
 }

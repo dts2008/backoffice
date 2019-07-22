@@ -22,7 +22,8 @@
 
     <v-data-table :headers="headers" :items="users" :loading="loading" :total-items="totalitems" :pagination.sync="pagination" @update:pagination="updatepagination">
       <template v-slot:items="props">
-        <td>{{ props.item.name }}</td>
+        <td>{{ props.item.id }}</td>
+        <td class="text-xs-right">{{ props.item.name }}</td>
         <td class="text-xs-right">{{ props.item.contacts }}</td>
         <td class="text-xs-right">{{ props.item.role }}</td>
         <td class="text-xs-right">{{ props.item.activity }}</td>
@@ -37,7 +38,7 @@
         </td>
       </template>
       <template v-slot:no-data>
-        <v-btn color="primary" @click="initialize">Reset</v-btn>
+        <v-btn color="primary" @click="fillusers">Reset</v-btn>
       </template>
     </v-data-table>
 
@@ -57,7 +58,8 @@ import api from '@/api/api'
       dialog: false,
       expand: false,
       headers: [
-        { text: 'Name', align: 'left', value: 'name' },
+        { text: 'Id', align: 'left', value: 'id' },
+        { text: 'Name', align: 'right', value: 'name' },
         { text: 'Contacts', align: 'right', value: 'contacts' },
         { text: 'Role', align: 'right', value: 'role' },
         { text: 'Last Activity', align: 'right', value: 'activity' },
@@ -84,32 +86,10 @@ import api from '@/api/api'
 
     computed: {
       users () {
-        const users = this.$store.getters.USERS;
+        const users = this.$store.getters.USERINFO;
         if (users && users.items)
         {
             this.totalitems = users.total_items
-            
-            // if (this.pagination.sortBy) {
-                
-            //     const sortedUser =  users.items.sort((a, b) => {
-            //         const sortA = a[this.pagination.sortB]
-            //         const sortB = b[this.pagination.sortB]
-              
-            //         if (this.pagination.descending) {
-            //             if (sortA < sortB) return 1
-            //             if (sortA > sortB) return -1
-            //             return 0
-            //         }
-                    
-            //         if (sortA < sortB) return -1
-            //         if (sortA > sortB) return 1
-                    
-            //         return 0
-            //     })
-
-            //     console.log(sortedUser)
-            //     return sortedUser;
-            // }
 
             return users.items;
         }
@@ -128,7 +108,6 @@ import api from '@/api/api'
     },
 
     created () {
-      //this.initialize()
       this.fillusers()
     },
 
@@ -137,22 +116,32 @@ import api from '@/api/api'
       {
         this.fillusers()
       },
+
       fillusers()
       {
         this.loading = true;
-        
         const { sortBy, descending, page, rowsPerPage } = this.pagination
-        //const { page, rowsPerPage } = this.pagination
-        
-        api.getusers(page, rowsPerPage, sortBy, descending).then((result) => {
+
+        api.get('userinfo', page, rowsPerPage, sortBy, descending).then((result) => {
               this.loading = false;
             }  
           ).catch((e) => {
-            console.log('get users - logs catch');
+            this.loading = false;
           });
       },
 
-      initialize () {
+      deleteItem (item) {
+        if (confirm(this.$t('deleteUser', { userName: item.name })))
+        {
+          this.loading = true;
+
+          api.delete('userinfo', item).then((result) => {
+              this.fillusers()
+            }  
+          ).catch((e) => {
+            this.loading = false;
+          });
+        }
       },
 
       editItem (item) {
@@ -161,10 +150,6 @@ import api from '@/api/api'
         this.dialog = true
       },
 
-      deleteItem (item) {
-        const index = this.desserts.indexOf(item)
-        confirm('Are you sure you want to delete this item?') && this.desserts.splice(index, 1)
-      },
 
       close () {
         this.dialog = false
