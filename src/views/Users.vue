@@ -11,11 +11,15 @@
       <v-divider class="mx-2" inset vertical></v-divider>
       <v-spacer></v-spacer>
       
+      <FUserInfo v-model="showFUserDialog" />
+
       <v-btn color="primary" dark @click="fillusers">
         Refresh
       </v-btn>
       
-      <v-btn color="primary" dark>
+      <!-- <v-btn flat slot="activator" class="success">Add new project</v-btn> -->
+
+      <v-btn color="primary" dark class="success">
         New user
       </v-btn>
     </v-toolbar>
@@ -49,6 +53,7 @@
 
 <script>
 import api from '@/api/api'
+import FUserInfo from "@/components/FUserInfo"
 
   export default {
     data: () => ({
@@ -66,6 +71,7 @@ import api from '@/api/api'
         { text: 'Partners', align: 'right', value: 'partners' },
         { text: 'Actions', align: 'right', value: 'name', sortable: false }
       ],
+      showFUserDialog: false,
       desserts: [],
       editedIndex: -1,
       editedItem: {
@@ -145,9 +151,11 @@ import api from '@/api/api'
       },
 
       editItem (item) {
-        this.editedIndex = this.desserts.indexOf(item)
-        this.editedItem = Object.assign({}, item)
-        this.dialog = true
+        //this.editedIndex = this.desserts.indexOf(item)
+        //this.editedItem = Object.assign({}, item)
+        this.showFUserDialog = true
+        console.log(this.FUserInfo)
+        //this.FUserInfo.showDialog = true
       },
 
 
@@ -167,7 +175,10 @@ import api from '@/api/api'
         }
         this.close()
       }
-    }
+    },
+    components: {
+        FUserInfo
+    },
   }
 </script>
 
