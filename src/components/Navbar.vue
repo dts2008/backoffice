@@ -27,7 +27,7 @@
                 </template>
 
                 <v-list>
-                    <v-list-tile v-for="lang in languages" :key="lang.language" @click="changeLocale(lang.language)">
+                    <v-list-tile v-for="lang in languages" :key="lang.language" @click="setLanguage(lang.language)">
                         <v-list-tile-title>
                             <flag :iso="lang.flag" v-bind:squared=false />
                             <span class="pl-1">{{ lang.title }}</span>
@@ -81,13 +81,11 @@ export default {
                 { icon: "account_box", text: "Partners", route: "/"},
                 { icon: "folder", text: "My Project", route: "/projects"},
                 { icon: "person", text: "Users", route: "/users"},
-                //{ icon: "person", text: "Login", route: "/login"},
             ],
             snackbar: false,
             languages: [{ flag: 'us', language: 'en', title: 'English' }, 
                         { flag: 'ru', language: 'ru', title: 'Русский' }
-            ],
-            //languages: Object.keys(languages),
+            ]
         }
     },
     computed:
@@ -98,17 +96,13 @@ export default {
         }
     },
     methods: {
-        changeLocale(languages)
-        {
-
-        },
         setLanguage(lang)
         {
-            //changeLocale(lang)
-            // localStorage.lang = lang;
-            // this.$i18n.locale = lang;
-            // // window.t = this;
+            this.$i18n.locale = lang
+            //dataTable.rowsPerPageText
+            //this.$vuetify.lang.current = 'ru'
         },
+
         logout()
         {
             this.$store.dispatch('LOGOUT');

@@ -1,7 +1,27 @@
 {
-  "message": "hello i18n !!",
-  "loginissue": "Login or Password is incorrect",
+  "error" : {
+    "loginIssue": "Login or Password is incorrect",
+    "100": "Internal error.",
+    "10": "User with same Login already exist"
+  },
   "deleteUser": "Do you want to delete {userName}?",
-  "editUserDialog": "Edit users",
-  "name": "Name"
+  "editUserDialog": "Edit user #id: {id} ",
+  "addUserDialog": "Add new user",
+  "name": "Name",
+  "roleUser": "User",
+  "roleManager": "Manager",
+  "roleAdmin": "Administrator",
+  "accept": "Accept",
+  "cancel": "Cancel",
+  "role": "Role",
+  "login": "Login",
+  "password": "Password",
+  "minLength": "Minimum lenght is {chars} characters",
+  "maxLength": "Maximum lenght is {chars} characters",
+  "add": "Add",
+  "refresh": "Refresh",
+  "lastActivity": "Last Activity",
+  "partners": "Partners",
+  "actions": "Actions",
+  "users": "Users"
 }

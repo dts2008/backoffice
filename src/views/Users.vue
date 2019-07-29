@@ -1,36 +1,32 @@
 <template>
 <div class="dashboard">
-  <h1>Users</h1>
-
-
-  <v-container class="my-5">
-
-
+  <v-container >
     <v-toolbar flat color="white">
-      <v-toolbar-title>Users</v-toolbar-title>
+      <v-toolbar-title>{{ $t('users') }}</v-toolbar-title>
       <v-divider class="mx-2" inset vertical></v-divider>
       <v-spacer></v-spacer>
       
-      <FUserInfo v-model="showFUserDialog" />
+      <!-- <FUserInfo v-model="showUserInfo" :item="userItem" ref="fuserinfo"/> -->
+      <FUserInfo ref="fuserinfo" @accept="accept"/>
 
       <v-btn color="primary" dark @click="fillusers">
-        Refresh
+        {{ $t('refresh') }}
       </v-btn>
       
       <!-- <v-btn flat slot="activator" class="success">Add new project</v-btn> -->
 
-      <v-btn color="primary" dark class="success">
-        New user
+      <v-btn color="primary" dark class="success" @click="editItem ()">
+        {{ $t('add') }}
       </v-btn>
     </v-toolbar>
 
-    <v-data-table :headers="headers" :items="users" :loading="loading" :total-items="totalitems" :pagination.sync="pagination" @update:pagination="updatepagination">
+    <v-data-table :headers="headers" :items="users" :loading="loading" :total-items="totalitems" :pagination.sync="pagination" @update:pagination="fillusers">
       <template v-slot:items="props">
         <td>{{ props.item.id }}</td>
+        <td class="text-xs-right">{{ props.item.login }}</td>
         <td class="text-xs-right">{{ props.item.name }}</td>
-        <td class="text-xs-right">{{ props.item.contacts }}</td>
-        <td class="text-xs-right">{{ props.item.role }}</td>
-        <td class="text-xs-right">{{ props.item.activity }}</td>
+        <td class="text-xs-right">{{ getRole(props.item.role) }}</td>
+        <td class="text-xs-right">{{ new Date(props.item.activity*1000).toLocaleString(cultureInfo) }}</td>
         <td class="text-xs-right">{{ props.item.partners }}</td>
         <td class="justify-center layout px-0">
           <v-icon small class="mr-2" @click="editItem(props.item)">
@@ -42,7 +38,7 @@
         </td>
       </template>
       <template v-slot:no-data>
-        <v-btn color="primary" @click="fillusers">Reset</v-btn>
+        <v-btn color="primary" @click="fillusers">{{ $t('refresh') }}</v-btn>
       </template>
     </v-data-table>
 
@@ -62,33 +58,9 @@ import FUserInfo from "@/components/FUserInfo"
       loading: false,
       dialog: false,
       expand: false,
-      headers: [
-        { text: 'Id', align: 'left', value: 'id' },
-        { text: 'Name', align: 'right', value: 'name' },
-        { text: 'Contacts', align: 'right', value: 'contacts' },
-        { text: 'Role', align: 'right', value: 'role' },
-        { text: 'Last Activity', align: 'right', value: 'activity' },
-        { text: 'Partners', align: 'right', value: 'partners' },
-        { text: 'Actions', align: 'right', value: 'name', sortable: false }
-      ],
-      showFUserDialog: false,
-      desserts: [],
-      editedIndex: -1,
-      editedItem: {
-        name: '',
-        calories: 0,
-        fat: 0,
-        carbs: 0,
-        protein: 0
-      },
-      defaultItem: {
-        name: '',
-        calories: 0,
-        fat: 0,
-        carbs: 0,
-        protein: 0
-      }
-    }),
+      
+      cultureInfo: 'en-US'
+}),
 
     computed: {
       users () {
@@ -102,25 +74,32 @@ import FUserInfo from "@/components/FUserInfo"
 
         return []
       },
-      formTitle () {
-        return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
-      }
-    },
 
-    watch: {
-      dialog (val) {
-        val || this.close()
+      headers() {
+        return [
+          { text: '#Id', align: 'left', value: 'id' },
+          { text: this.$t('login'), align: 'right', value: 'login' },
+          { text: this.$t('name'), align: 'right', value: 'name' },
+          { text: this.$t('role'), align: 'right', value: 'role' },
+          { text: this.$t('lastActivity'), align: 'right', value: 'activity' },
+          { text: this.$t('partners'), align: 'right', value: 'partners' },
+          { text: this.$t('actions'), align: 'center', value: 'name', sortable: false }
+        ]
       }
     },
 
     created () {
-      this.fillusers()
+      this.cultureInfo = window.navigator.userLanguage || window.navigator.language
     },
 
     methods: {
-      updatepagination()
+      getRole(role)
       {
-        this.fillusers()
+        
+        if (role == 1) return this.$t('roleAdmin')
+        if (role == 2) return this.$t('roleManager')
+
+        return this.$t('roleUser')
       },
 
       fillusers()
@@ -151,29 +130,19 @@ import FUserInfo from "@/components/FUserInfo"
       },
 
       editItem (item) {
-        //this.editedIndex = this.desserts.indexOf(item)
-        //this.editedItem = Object.assign({}, item)
-        this.showFUserDialog = true
-        console.log(this.FUserInfo)
-        //this.FUserInfo.showDialog = true
+        this.$refs.fuserinfo.showForm(item)
       },
+      
+      accept(item)
+      {
+          this.loading = true;
 
-
-      close () {
-        this.dialog = false
-        setTimeout(() => {
-          this.editedItem = Object.assign({}, this.defaultItem)
-          this.editedIndex = -1
-        }, 300)
-      },
-
-      save () {
-        if (this.editedIndex > -1) {
-          Object.assign(this.desserts[this.editedIndex], this.editedItem)
-        } else {
-          this.desserts.push(this.editedItem)
-        }
-        this.close()
+          api.update('userinfo', item).then((result) => {
+              this.fillusers()
+            }  
+          ).catch((e) => {
+            this.loading = false;
+          });
       }
     },
     components: {
@@ -181,26 +150,3 @@ import FUserInfo from "@/components/FUserInfo"
     },
   }
 </script>
-
-<style>
-.project.complete {
-  border-left: 4px solid #3cd1c2;
-}
-.project.ongoing {
-  border-left: 4px solid orange;
-}
-.project.overdue {
-  border-left: 4px solid tomato;
-}
-
-.v-chip.complete {
-  background: #3cd1c2;
-}
-.v-chip.ongoing {
-  background: orange;
-}
-.v-chip.overdue {
-  background: tomato;
-}
-
-</style>

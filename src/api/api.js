@@ -72,6 +72,24 @@ class API {
             return false;
         }
     }
+
+    async update(type, item)
+    {
+        try {
+            const result = await this.axios.post(this.apiHost + '/api2/update?type=' + type + '&token=' + store.getters.GETTOKEN, 
+                item, { headers: {'Content-Type': 'text/plain'} })
+            
+                if (result && result.data.status === 'OK'
+                ) {
+                return true;
+            }
+                        
+            return false;
+        } catch (e) {
+            console.log(e);
+            return false;
+        }
+    }
 }
 
 

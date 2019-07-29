@@ -2,7 +2,7 @@
     <v-content>
         <v-snackbar v-model="snackbar" :timeout="2000" top color="error">
             <span>
-                {{ $t('loginissue') }}
+                {{ $t('error.loginIssue') }}
             </span>
             <v-btn flat color="white" @click="snackbar = false">Close</v-btn>
         </v-snackbar>

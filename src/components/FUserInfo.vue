@@ -1,25 +1,22 @@
 <template>
-  <v-dialog max-width="600px" >
-        <v-btn flat slot="activator" class="success">Add new project</v-btn>
+  <!-- <v-dialog :value="value" max-width="600px" @input="$emit('input')"> -->
+      <v-dialog v-model="show" max-width="600px" >
         <v-card>
             <v-card-title>
-                <h2>{{ this.$t('editUserDialog') }}</h2>
+                <h2>{{ title }}</h2>
             </v-card-title>
             <v-card-text >
-                <v-form class="px-3" ref="form">
-                    <v-text-field label="Name" v-model="title" prepend-icon="folder" :rules="inputRules">
-                    </v-text-field>
-                    <v-textarea label="Information" v-model="content"  prepend-icon="edit" :rules="inputRules">
-                    </v-textarea>
-
-                    <v-menu>
-                        <v-text-field :value="due" slot="activator" label="Due day" prepend-icon="date_range"></v-text-field>
-                        <v-date-picker v-model="due" offset-y>
-                        </v-date-picker>
-                    </v-menu>
+                <v-form class="px-3" ref="form" autocomplete="off">
+                    <v-text-field :label="this.$t('login')" autocomplete="off" v-model="userItem.login" prepend-icon="person" :rules="inputLoginRules" readonly onfocus="this.removeAttribute('readonly');"></v-text-field>
+                    <v-text-field :label="this.$t('password')" autocomplete="new-password" v-model="userItem.password" prepend-icon="lock" :rules="inputPasswordRules" type="password" readonly onfocus="this.removeAttribute('readonly');"></v-text-field>
+                    <v-text-field :label="this.$t('name')" v-model="userItem.name" prepend-icon="folder" ></v-text-field>
+                    <v-select :label="this.$t('role')" v-model="userItem.role" :items="roles" item-text="name" item-value="value"></v-select>
                     <v-spacer></v-spacer>
-
-                    <v-btn flat class="success mx-0 mt-3" @click="submit" :loading="loading">Add Project</v-btn>
+                    <v-card-actions class="mt-2">
+                        <v-btn class="success" @click="submit" :loading="loading">{{ this.$t('accept') }}</v-btn>
+                        <v-spacer></v-spacer>
+                        <v-btn color="red lighten-2" @click="show = false">{{ this.$t('cancel') }}</v-btn>
+                    </v-card-actions>
                 </v-form>    
             </v-card-text>
         </v-card>
@@ -32,36 +29,70 @@
 export default {
     data(){
         return {
-            title: '',
             content: '',
-            isShowDialog: null,
+            show: false,
             loading: false,
             due: null,
-            inputRules: [
-                v => v.length >= 3 || 'Minimum lenght is 3 characters',
-                v => v.length <= 10 || 'Maximum lenght is 10 characters'
-            ],
+            userItem: { id: 0, login: '', password: '', name: '', contact: '', role: 3, activity: 0, partners: 0}
         }
     },
     computed:{
-        _show()
+        roles()
         {
-            return this.isShowDialog === null ? this.showDialog : this.isShowDialog
+            return [
+                { name: this.$t('roleAdmin'), value: 1 },
+                { name: this.$t('roleManager'), value: 2 },
+                { name: this.$t('roleUser'), value: 3 }
+            ]
+        },
+        
+        title() {
+            if (this.userItem.id != 0) 
+                return this.$t('editUserDialog', { "id": this.userItem.id }) 
+            
+            return this.$t('addUserDialog') 
+        },
+
+        inputLoginRules()
+        {
+            return [
+                v => (v && v.length >= 3) || this.$t('minLength', {'chars': 3} ),
+                v => (v && v.length <= 32) || this.$t('maxLength', {'chars': 32} )
+            ]
+        },
+
+        inputPasswordRules()
+        {
+            if (this.userItem.id != 0 && this.userItem.id > 0) return [];
+            return [
+                v => (v && v.length >= 3) || this.$t('minLength', {'chars': 3} ),
+                v => (v && v.length <= 32) || this.$t('maxLength', {'chars': 32} )
+            ]
         }
     }
     ,
-    props:{
-        showDialog: Boolean
-    }
+    props: ["value", 'item']
     ,
     methods: {
-        submit()
-        {
-            if (this.$refs.form.validate())
-            {   
-                this.isShowDialog = false;
-                //showDialog = false
+        submit() {
+            if (this.$refs.form.validate()) {   
+                this.show = false
+                this.$emit('accept', this.userItem)
             }
+        },
+        resetValidation() {
+            this.$refs.form.resetValidation()
+        },
+        showForm(user) {
+            if (user) {
+                this.userItem = Object.assign({},user)
+            } 
+            else {
+                this.userItem = { id: 0, login: '', password: '', name: '', contact: '', role: 3, activity: 0, partners: 0}
+            }
+
+            this.show = true
+            this.$refs.form.resetValidation()
         }
     }
 }
