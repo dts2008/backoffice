@@ -4,13 +4,8 @@
     "100": "Internal error.",
     "10": "User with same Login already exist"
   },
-  "deleteUser": "Do you want to delete {userName}?",
-  "editUserDialog": "Edit user #id: {id} ",
-  "addUserDialog": "Add new user",
+
   "name": "Name",
-  "roleUser": "User",
-  "roleManager": "Manager",
-  "roleAdmin": "Administrator",
   "accept": "Accept",
   "cancel": "Cancel",
   "role": "Role",
@@ -21,7 +16,55 @@
   "add": "Add",
   "refresh": "Refresh",
   "lastActivity": "Last Activity",
-  "partners": "Partners",
   "actions": "Actions",
-  "users": "Users"
+
+  "pages":{
+    "partners": "Partners",
+    "users": "Users",
+    "contacts": "Contacts"
+  },
+
+  "users":{
+    "partners": "Partners",
+    "delete": "Do you want to delete {userName}?",
+    "edit": "Edit user #id: {id} ",
+    "add": "Add new user",
+    
+    "roles":{
+      "user": "User",
+      "manager": "Manager",
+      "admin": "Administrator"
+    }
+  },
+
+  "partners": {
+    "added": "Added",
+    "website": "Web site",
+    "manager": "Manager",
+    "status": "Status",
+    "name": "Name",
+    "delete": "Do you want to delete {partnerName}?",
+    "edit": "Edit partner #id: {id} ",
+    "add": "Add new partner"
+  },
+
+  "$vuetify":
+  {
+    "dataIterator": {
+      "rowsPerPageText": "Items per page:",
+      "rowsPerPageAll": "All",
+      "pageText": "{0}-{1} of {2}",
+      "noResultsText": "No matching records found",
+      "nextPage": "Next page",
+      "prevPage": "Previous page"
+    },
+    "dataTable": {
+      "rowsPerPageText": "Rows per page:"
+    },
+    "noDataText": "No data available",
+    "carousel": {
+      "prev": "Previous visual",
+      "next": "Next visual"
+    }
+  }
 }

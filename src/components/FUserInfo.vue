@@ -1,6 +1,5 @@
 <template>
-  <!-- <v-dialog :value="value" max-width="600px" @input="$emit('input')"> -->
-      <v-dialog v-model="show" max-width="600px" >
+      <v-dialog v-model="show" max-width="600px" persistent>
         <v-card>
             <v-card-title>
                 <h2>{{ title }}</h2>
@@ -32,7 +31,6 @@ export default {
             content: '',
             show: false,
             loading: false,
-            due: null,
             userItem: { id: 0, login: '', password: '', name: '', contact: '', role: 3, activity: 0, partners: 0}
         }
     },
@@ -40,17 +38,17 @@ export default {
         roles()
         {
             return [
-                { name: this.$t('roleAdmin'), value: 1 },
-                { name: this.$t('roleManager'), value: 2 },
-                { name: this.$t('roleUser'), value: 3 }
+                { name: this.$t('users.roles.admin'), value: 1 },
+                { name: this.$t('users.roles.manager'), value: 2 },
+                { name: this.$t('users.roles.user'), value: 3 }
             ]
         },
         
         title() {
             if (this.userItem.id != 0) 
-                return this.$t('editUserDialog', { "id": this.userItem.id }) 
+                return this.$t('users.edit', { "id": this.userItem.id }) 
             
-            return this.$t('addUserDialog') 
+            return this.$t('users.add') 
         },
 
         inputLoginRules()
@@ -70,8 +68,6 @@ export default {
             ]
         }
     }
-    ,
-    props: ["value", 'item']
     ,
     methods: {
         submit() {

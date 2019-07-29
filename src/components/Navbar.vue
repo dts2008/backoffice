@@ -67,8 +67,6 @@
 
 <script>
 
-// import Popup from "./Popup"
-// import { languages, changeLocale } from '@/i18n'
 /* eslint-disable */
 
 export default {
@@ -77,11 +75,6 @@ export default {
     data(){
         return {
             drawer : true,
-            links : [
-                { icon: "account_box", text: "Partners", route: "/"},
-                { icon: "folder", text: "My Project", route: "/projects"},
-                { icon: "person", text: "Users", route: "/users"},
-            ],
             snackbar: false,
             languages: [{ flag: 'us', language: 'en', title: 'English' }, 
                         { flag: 'ru', language: 'ru', title: 'Русский' }
@@ -93,6 +86,14 @@ export default {
         currentLanguage()
         {
             return this.languages.find(l => this.$i18n.locale === l.language )
+        },
+
+        links() {
+            return [
+                { icon: "account_box", text: this.$t('pages.partners'), route: "/"},
+                { icon: "folder", text: this.$t('pages.contacts'), route: "/contacts"},
+                { icon: "person", text: this.$t('pages.users'), route: "/users"},
+            ]
         }
     },
     methods: {

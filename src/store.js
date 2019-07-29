@@ -9,8 +9,8 @@ const store = new Vuex.Store({
     //loggedIn: false,
     language: 'en',
     token: '',
-    partners: null,
-    userinfo: null
+    userinfo: null,
+    partnerinfo: null
   },
   getters: {
     LOGGEDIN: state => {
@@ -19,11 +19,11 @@ const store = new Vuex.Store({
     TOKEN: state => {
       return state.token
     },
-    PARTNERS: state => {
-      return state.partners
-    },
     USERINFO: state => {
       return state.userinfo
+    },
+    PARTNERINFO: state => {
+      return state.partnerinfo
     }
   },
   mutations: {
@@ -33,8 +33,8 @@ const store = new Vuex.Store({
     SET_LANGUAGE: (state, language) => {
       state.language = language
     },
-    SET_PARTNERS: (state, partners) => {
-      state.partners = partners
+    SET_PARTNERINFO: (state, partnerinfo) => {
+      state.partnerinfo = partnerinfo
     },
     SET_USERINFO: (state, userinfo) => {
       state.userinfo = userinfo

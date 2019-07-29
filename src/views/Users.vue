@@ -1,19 +1,15 @@
 <template>
-<div class="dashboard">
+<div class="users">
   <v-container >
     <v-toolbar flat color="white">
-      <v-toolbar-title>{{ $t('users') }}</v-toolbar-title>
+      <v-toolbar-title>{{ $t('pages.users') }}</v-toolbar-title>
       <v-divider class="mx-2" inset vertical></v-divider>
       <v-spacer></v-spacer>
       
-      <!-- <FUserInfo v-model="showUserInfo" :item="userItem" ref="fuserinfo"/> -->
       <FUserInfo ref="fuserinfo" @accept="accept"/>
-
       <v-btn color="primary" dark @click="fillusers">
         {{ $t('refresh') }}
       </v-btn>
-      
-      <!-- <v-btn flat slot="activator" class="success">Add new project</v-btn> -->
 
       <v-btn color="primary" dark class="success" @click="editItem ()">
         {{ $t('add') }}
@@ -56,13 +52,15 @@ import FUserInfo from "@/components/FUserInfo"
       totalitems: 0,
       pagination: { rowsPerPage: 10},
       loading: false,
-      dialog: false,
-      expand: false,
-      
       cultureInfo: 'en-US'
 }),
 
+    components: {
+        FUserInfo
+    },
+
     computed: {
+
       users () {
         const users = this.$store.getters.USERINFO;
         if (users && users.items)
@@ -82,7 +80,7 @@ import FUserInfo from "@/components/FUserInfo"
           { text: this.$t('name'), align: 'right', value: 'name' },
           { text: this.$t('role'), align: 'right', value: 'role' },
           { text: this.$t('lastActivity'), align: 'right', value: 'activity' },
-          { text: this.$t('partners'), align: 'right', value: 'partners' },
+          { text: this.$t('users.partners'), align: 'right', value: 'partners' },
           { text: this.$t('actions'), align: 'center', value: 'name', sortable: false }
         ]
       }
@@ -95,11 +93,9 @@ import FUserInfo from "@/components/FUserInfo"
     methods: {
       getRole(role)
       {
-        
-        if (role == 1) return this.$t('roleAdmin')
-        if (role == 2) return this.$t('roleManager')
-
-        return this.$t('roleUser')
+        if (role == 1) return this.$t('users.roles.admin')
+        if (role == 2) return this.$t('users.roles.manager')
+        return this.$t('users.roles.user')
       },
 
       fillusers()
@@ -116,7 +112,7 @@ import FUserInfo from "@/components/FUserInfo"
       },
 
       deleteItem (item) {
-        if (confirm(this.$t('deleteUser', { userName: item.name })))
+        if (confirm(this.$t('users.delete', { userName: item.name })))
         {
           this.loading = true;
 
@@ -144,9 +140,6 @@ import FUserInfo from "@/components/FUserInfo"
             this.loading = false;
           });
       }
-    },
-    components: {
-        FUserInfo
-    },
+    }
   }
 </script>

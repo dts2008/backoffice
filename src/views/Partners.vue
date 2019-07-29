@@ -1,27 +1,29 @@
 <template>
-<div class="dashboard">
-  <h1>Partners</h1>
-
-
-  <v-container class="my-5">
-
-
+<div class="partners">
+  <v-container >
     <v-toolbar flat color="white">
-      <v-toolbar-title>Partners</v-toolbar-title>
+      <v-toolbar-title>{{ $t('pages.partners') }}</v-toolbar-title>
       <v-divider class="mx-2" inset vertical></v-divider>
       <v-spacer></v-spacer>
-      <template v-slot:activator="{ on }">
-          <v-btn color="primary" dark class="mb-2" v-on="on">New Item</v-btn>        
-      </template>
+      
+      <FPartnerInfo ref="fpartnerinfo" @accept="accept"/>
+      <v-btn color="primary" dark @click="fillpartners">
+        {{ $t('refresh') }}
+      </v-btn>
+
+      <v-btn color="primary" dark class="success" @click="editItem ()">
+        {{ $t('add') }}
+      </v-btn>
     </v-toolbar>
 
-    <v-data-table :headers="headers" :items="desserts">
+    <v-data-table :headers="headers" :items="partners" :loading="loading" :total-items="totalitems" :pagination.sync="pagination" @update:pagination="fillpartners">
       <template v-slot:items="props">
-        <td>{{ props.item.name }}</td>
-        <td class="text-xs-right">{{ props.item.calories }}</td>
-        <td class="text-xs-right">{{ props.item.fat }}</td>
-        <td class="text-xs-right">{{ props.item.carbs }}</td>
-        <td class="text-xs-right">{{ props.item.protein }}</td>
+        <td>{{ props.item.id }}</td>
+        <td class="text-xs-right">{{ props.item.name }}</td>
+        <td class="text-xs-right">{{ props.item.website }}</td>
+        <td class="text-xs-right">{{ props.item.manager }}</td>
+        <td class="text-xs-right">{{ new Date(props.item.added*1000).toLocaleString(cultureInfo) }}</td>
+        <td class="text-xs-right">{{ props.item.status }}</td>
         <td class="justify-center layout px-0">
           <v-icon small class="mr-2" @click="editItem(props.item)">
             edit
@@ -32,7 +34,7 @@
         </td>
       </template>
       <template v-slot:no-data>
-        <v-btn color="primary" @click="initialize">Reset</v-btn>
+        <v-btn color="primary" @click="fillpartners">{{ $t('refresh') }}</v-btn>
       </template>
     </v-data-table>
 
@@ -41,184 +43,97 @@
 </div>
 </template>
 
-
 <script>
+import api from '@/api/api'
+import FPartnerInfo from "@/components/FPartnerInfo"
+
   export default {
     data: () => ({
-      dialog: false,
-      headers: [
-        {
-          text: 'Dessert (100g serving)',
-          align: 'left',
-          sortable: false,
-          value: 'name'
-        },
-        { text: 'Calories', value: 'calories' },
-        { text: 'Fat (g)', value: 'fat' },
-        { text: 'Carbs (g)', value: 'carbs' },
-        { text: 'Protein (g)', value: 'protein' },
-        { text: 'Actions', value: 'name', sortable: false }
-      ],
-      desserts: [],
-      editedIndex: -1,
-      editedItem: {
-        name: '',
-        calories: 0,
-        fat: 0,
-        carbs: 0,
-        protein: 0
-      },
-      defaultItem: {
-        name: '',
-        calories: 0,
-        fat: 0,
-        carbs: 0,
-        protein: 0
-      }
+      totalitems: 0,
+      pagination: { rowsPerPage: 10},
+      loading: false,
+      cultureInfo: 'en-US'
     }),
 
-    computed: {
-      formTitle () {
-        return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
-      }
-    },
+    components: {
+        FPartnerInfo
+      },
 
-    watch: {
-      dialog (val) {
-        val || this.close()
+    computed: {
+      
+      partners () {
+        const partners = this.$store.getters.PARTNERSINFO;
+        if (partners && partners.items)
+        {
+            this.totalitems = partners.total_items
+
+            return partners.items;
+        }
+
+        return []
+      },
+
+      headers() {
+        return [
+          { text: '#Id', align: 'left', value: 'id' },
+          { text: this.$t('partners.name'), align: 'right', value: 'name' },
+          { text: this.$t('partners.website'), align: 'right', value: 'website' },
+          { text: this.$t('partners.manager'), align: 'right', value: 'manager' },
+          { text: this.$t('partners.added'), align: 'right', value: 'added' },
+          { text: this.$t('partners.status'), align: 'right', value: 'status' },
+          { text: this.$t('actions'), align: 'center', value: 'name', sortable: false }
+        ]
       }
     },
 
     created () {
-      this.initialize()
+      this.cultureInfo = window.navigator.userLanguage || window.navigator.language
     },
 
     methods: {
-      initialize () {
-        this.desserts = [
-          {
-            name: 'Frozen Yogurt',
-            calories: 159,
-            fat: 6.0,
-            carbs: 24,
-            protein: 4.0
-          },
-          {
-            name: 'Ice cream sandwich',
-            calories: 237,
-            fat: 9.0,
-            carbs: 37,
-            protein: 4.3
-          },
-          {
-            name: 'Eclair',
-            calories: 262,
-            fat: 16.0,
-            carbs: 23,
-            protein: 6.0
-          },
-          {
-            name: 'Cupcake',
-            calories: 305,
-            fat: 3.7,
-            carbs: 67,
-            protein: 4.3
-          },
-          {
-            name: 'Gingerbread',
-            calories: 356,
-            fat: 16.0,
-            carbs: 49,
-            protein: 3.9
-          },
-          {
-            name: 'Jelly bean',
-            calories: 375,
-            fat: 0.0,
-            carbs: 94,
-            protein: 0.0
-          },
-          {
-            name: 'Lollipop',
-            calories: 392,
-            fat: 0.2,
-            carbs: 98,
-            protein: 0
-          },
-          {
-            name: 'Honeycomb',
-            calories: 408,
-            fat: 3.2,
-            carbs: 87,
-            protein: 6.5
-          },
-          {
-            name: 'Donut',
-            calories: 452,
-            fat: 25.0,
-            carbs: 51,
-            protein: 4.9
-          },
-          {
-            name: 'KitKat',
-            calories: 518,
-            fat: 26.0,
-            carbs: 65,
-            protein: 7
-          }
-        ]
-      },
 
-      editItem (item) {
-        this.editedIndex = this.desserts.indexOf(item)
-        this.editedItem = Object.assign({}, item)
-        this.dialog = true
+      fillpartners()
+      {
+        this.loading = true;
+        const { sortBy, descending, page, rowsPerPage } = this.pagination
+
+        api.get('partnerinfo', page, rowsPerPage, sortBy, descending).then((result) => {
+              this.loading = false;
+            }  
+          ).catch((e) => {
+            this.loading = false;
+          });
       },
 
       deleteItem (item) {
-        const index = this.desserts.indexOf(item)
-        confirm('Are you sure you want to delete this item?') && this.desserts.splice(index, 1)
-      },
+        if (confirm(this.$t('partners.delete', { partnerName: item.name })))
+        {
+          this.loading = true;
 
-      close () {
-        this.dialog = false
-        setTimeout(() => {
-          this.editedItem = Object.assign({}, this.defaultItem)
-          this.editedIndex = -1
-        }, 300)
-      },
-
-      save () {
-        if (this.editedIndex > -1) {
-          Object.assign(this.desserts[this.editedIndex], this.editedItem)
-        } else {
-          this.desserts.push(this.editedItem)
+          api.delete('partnerinfo', item).then((result) => {
+              this.fillpartners()
+            }  
+          ).catch((e) => {
+            this.loading = false;
+          });
         }
-        this.close()
+      },
+
+      editItem (item) {
+        this.$refs.fpartnerinfo.showForm(item)
+      },
+      
+      accept(item)
+      {
+          this.loading = true;
+
+          api.update('partnerinfo', item).then((result) => {
+              this.fillpartners()
+            }  
+          ).catch((e) => {
+            this.loading = false;
+          });
       }
     }
   }
 </script>
-
-<style>
-.project.complete {
-  border-left: 4px solid #3cd1c2;
-}
-.project.ongoing {
-  border-left: 4px solid orange;
-}
-.project.overdue {
-  border-left: 4px solid tomato;
-}
-
-.v-chip.complete {
-  background: #3cd1c2;
-}
-.v-chip.ongoing {
-  background: orange;
-}
-.v-chip.overdue {
-  background: tomato;
-}
-
-</style>
