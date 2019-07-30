@@ -29,7 +29,7 @@
     "delete": "Do you want to delete {userName}?",
     "edit": "Edit user #id: {id} ",
     "add": "Add new user",
-    
+
     "roles":{
       "user": "User",
       "manager": "Manager",
@@ -46,6 +46,7 @@
     "delete": "Do you want to delete {partnerName}?",
     "edit": "Edit partner #id: {id} ",
     "add": "Add new partner",
+    "description": "Description",
     "statuses": {
       "new": "New",
       "inprocess": "In Process",

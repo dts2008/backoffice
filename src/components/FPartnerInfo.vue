@@ -8,6 +8,9 @@
                 <v-form class="px-3" ref="form" autocomplete="off">
                     <v-text-field :label="this.$t('partners.name')" v-model="partnerItem.name" prepend-icon="folder" ></v-text-field>
                     <v-text-field :label="this.$t('partners.website')" v-model="partnerItem.website" prepend-icon="folder" ></v-text-field>
+                    <v-select :label="this.$t('partners.status')" v-model="partnerItem.status" :items="status" item-text="name" item-value="value"></v-select>
+                    <v-textarea :label="this.$t('partners.description')" v-model="partnerItem.description"  prepend-icon="edit" >
+                    </v-textarea>
                     <v-spacer></v-spacer>
                     <v-card-actions class="mt-2">
                         <v-btn class="success" @click="submit" :loading="loading">{{ this.$t('accept') }}</v-btn>
@@ -40,6 +43,16 @@ export default {
             return this.$t('partners.add') 
         },
 
+        status()
+        {
+            return [
+                { name: this.$t('partners.statuses.new'), value: 0 },
+                { name: this.$t('partners.statuses.inprocess'), value: 1 },
+                { name: this.$t('partners.statuses.working'), value: 2 },
+                { name: this.$t('partners.statuses.rejected'), value: 3 }
+            ]
+        },
+
         inputNameRules()
         {
             return [
@@ -53,7 +66,7 @@ export default {
         submit() {
             if (this.$refs.form.validate()) {   
                 this.show = false
-                //this.$emit('accept', this.userItem)
+                this.$emit('accept', this.partnerItem)
             }
         },
         resetValidation() {

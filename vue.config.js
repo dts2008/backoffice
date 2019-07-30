@@ -9,5 +9,6 @@ module.exports = {
   },
   chainWebpack: config => {
     config.module.rules.delete('eslint');
-  }
+  },
+  devServer: { port: 9101 }	
 }
