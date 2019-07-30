@@ -45,7 +45,13 @@
     "name": "Name",
     "delete": "Do you want to delete {partnerName}?",
     "edit": "Edit partner #id: {id} ",
-    "add": "Add new partner"
+    "add": "Add new partner",
+    "statuses": {
+      "new": "New",
+      "inprocess": "In Process",
+      "working": "Working",
+      "rejected": "Rejected"
+    }
   },
 
   "$vuetify":

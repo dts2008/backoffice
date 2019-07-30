@@ -61,8 +61,15 @@ import FPartnerInfo from "@/components/FPartnerInfo"
 
     computed: {
       
+      getStatus(role)
+      {
+        if (role == 1) return this.$t('users.roles.admin')
+        if (role == 2) return this.$t('users.roles.manager')
+        return this.$t('users.roles.user')
+      },
+      
       partners () {
-        const partners = this.$store.getters.PARTNERSINFO;
+        const partners = this.$store.getters.PARTNERINFO;
         if (partners && partners.items)
         {
             this.totalitems = partners.total_items
