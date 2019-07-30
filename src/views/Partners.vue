@@ -23,7 +23,11 @@
         <td class="text-xs-right">{{ props.item.website }}</td>
         <td class="text-xs-right">{{ props.item.manager }}</td>
         <td class="text-xs-right">{{ new Date(props.item.added*1000).toLocaleString(cultureInfo) }}</td>
-        <td class="text-xs-right">{{ props.item.status }}</td>
+        
+        <td class="text-xs-right">
+        <v-chip small :class="`partners status${props.item.status}`">{{ getStatus(props.item.status) }}</v-chip>
+        </td>
+        
         <td class="justify-center layout px-0">
           <v-icon small class="mr-2" @click="editItem(props.item)">
             edit
@@ -61,13 +65,6 @@ import FPartnerInfo from "@/components/FPartnerInfo"
 
     computed: {
       
-      getStatus(role)
-      {
-        if (role == 1) return this.$t('users.roles.admin')
-        if (role == 2) return this.$t('users.roles.manager')
-        return this.$t('users.roles.user')
-      },
-      
       partners () {
         const partners = this.$store.getters.PARTNERINFO;
         if (partners && partners.items)
@@ -98,6 +95,14 @@ import FPartnerInfo from "@/components/FPartnerInfo"
     },
 
     methods: {
+      getStatus(status)
+      {
+        if (status == 1) return this.$t('partners.statuses.inprocess'); 
+        if (status == 2) return this.$t('partners.statuses.working');
+        if (status == 3) return this.$t('partners.statuses.rejected');
+        
+        return this.$t('partners.statuses.new')
+      },
 
       fillpartners()
       {
@@ -144,3 +149,18 @@ import FPartnerInfo from "@/components/FPartnerInfo"
     }
   }
 </script>
+
+<style>
+.partners.status0 {
+  background: #3cd1c2;
+}
+.partners.status1 {
+  background: orange;
+}
+.partners.status2 {
+  background: rgb(0, 247, 0);
+}
+.partners.status3 {
+  background: tomato;
+}
+</style>
