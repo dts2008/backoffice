@@ -1,12 +1,15 @@
 <template>
 <div class="partners">
-  <v-container >
+  <!-- <transition name="fade" v-if="edit" :duration="1000"> -->
+  <FPartnerInfo ref="fpartnerinfo" @accept="accept" @close="close" :item="currentItem" v-if="edit"/>
+  <!-- </transition> -->
+  <v-container v-else>
     <v-toolbar flat color="white">
       <v-toolbar-title>{{ $t('pages.partners') }}</v-toolbar-title>
       <v-divider class="mx-2" inset vertical></v-divider>
       <v-spacer></v-spacer>
       
-      <FPartnerInfo ref="fpartnerinfo" @accept="accept"/>
+      <!-- <FPartnerInfo ref="fpartnerinfo" @accept="accept"/> -->
       <v-btn color="primary" dark @click="fillpartners">
         {{ $t('refresh') }}
       </v-btn>
@@ -50,17 +53,21 @@
 <script>
 import api from '@/api/api'
 import FPartnerInfo from "@/components/FPartnerInfo"
+import Contacts from '@/views/Contacts.vue'
 
   export default {
     data: () => ({
       totalitems: 0,
       pagination: { rowsPerPage: 10},
       loading: false,
-      cultureInfo: 'en-US'
+      cultureInfo: 'en-US',
+      edit: false,
+      currentItem: null
     }),
 
     components: {
-        FPartnerInfo
+        FPartnerInfo,
+        Contacts
       },
 
     computed: {
@@ -100,6 +107,8 @@ import FPartnerInfo from "@/components/FPartnerInfo"
         if (status == 1) return this.$t('partners.statuses.inprocess'); 
         if (status == 2) return this.$t('partners.statuses.working');
         if (status == 3) return this.$t('partners.statuses.rejected');
+        if (status == 4) return this.$t('partners.statuses.postponed');
+        
         
         return this.$t('partners.statuses.new')
       },
@@ -132,7 +141,18 @@ import FPartnerInfo from "@/components/FPartnerInfo"
       },
 
       editItem (item) {
-        this.$refs.fpartnerinfo.showForm(item)
+        //console.log('edit')
+        //console.log(item)
+        this.currentItem = item
+        this.edit = true
+        //console.log(this.$refs)
+        //console.log(this.$refs.fpartnerinfo)
+        //this.$refs.fpartnerinfo.showForm(item)
+      },
+      
+      close () {
+        this.edit = false
+        //this.$refs.fpartnerinfo.showForm(item)
       },
       
       accept(item)
@@ -143,8 +163,10 @@ import FPartnerInfo from "@/components/FPartnerInfo"
               this.fillpartners()
             }  
           ).catch((e) => {
-            this.loading = false;
+            //this.loading = false;
           });
+
+          this.edit = false
       }
     }
   }
@@ -162,5 +184,8 @@ import FPartnerInfo from "@/components/FPartnerInfo"
 }
 .partners.status3 {
   background: tomato;
+}
+.partners.status4 {
+  background: grey;
 }
 </style>

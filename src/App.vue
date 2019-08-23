@@ -6,7 +6,7 @@
       <router-view></router-view>
     </v-content>
     
-    <router-view v-if="!loggedIn"></router-view>
+    <router-view v-else></router-view>
   </v-app>
 </template>
 

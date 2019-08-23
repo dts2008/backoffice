@@ -32,11 +32,11 @@ class API {
         }
     }
 
-     async get(type, current_page, page_size, sort_by, descending)
+     async get(type, current_page, page_size, sort_by, descending, filters)
     {
         try {
             const result = await this.axios.get(this.apiHost + '/api2/get?type=' + type + '&token=' + store.getters.GETTOKEN + 
-                '&page_size=' + page_size + '&current_page=' + current_page + '&sort_by=' + sort_by + '&descending=' + descending)
+                '&page_size=' + page_size + '&current_page=' + current_page + '&sort_by=' + sort_by + '&descending=' + descending + "&filter=" + JSON.stringify(filters))
 
             if (result &&
                 result.data &&
@@ -89,6 +89,25 @@ class API {
             console.log(e);
             return false;
         }
+    }
+
+    async upload(file, id, options)
+    {
+        let formData = new FormData();
+        formData.append('file', this.file);
+      
+        this.axios.post(this.apiHost + '/api2/upload?type=' + type + '&token=' + store.getters.GETTOKEN + '&id=' + id + '&options=' + JSON.stringify(options),
+                formData, {
+                  headers: {
+                    'Content-Type': 'multipart/form-data'
+                  }
+                }
+              ).then(function () {
+                console.log('SUCCESS!!');
+              })
+              .catch(function () {
+                console.log('FAILURE!!');
+              });
     }
 }
 

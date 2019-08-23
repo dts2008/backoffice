@@ -19,13 +19,13 @@
   "actions": "Actions",
 
   "pages":{
-    "partners": "Partners",
+    "partners": "Client",
     "users": "Users",
     "contacts": "Contacts"
   },
 
   "users":{
-    "partners": "Partners",
+    "partners": "Client",
     "delete": "Do you want to delete {userName}?",
     "edit": "Edit user #id: {id} ",
     "add": "Add new user",
@@ -44,15 +44,30 @@
     "status": "Status",
     "name": "Name",
     "delete": "Do you want to delete {partnerName}?",
-    "edit": "Edit partner #id: {id} ",
-    "add": "Add new partner",
+    "edit": "Edit client #id: {id} ",
+    "add": "Add new client",
     "description": "Description",
+    "contacts": "Contact",
     "statuses": {
       "new": "New",
       "inprocess": "In Process",
       "working": "Working",
-      "rejected": "Rejected"
+      "rejected": "Rejected",
+      "postponed": "Postponed"
+    },
+    "contact": {
+      "name": "Name",
+      "email": "e-mail",
+      "phone": "Phone",
+      "skype": "Skype",
+      "telegram": "Telegram",
+      "whatsapp": "WhatsApp",
+      "comment": "Comment",
+      "delete": "Do you want to delete {name}?",
+      "edit": "Edit contact #id: {id} ",
+      "add": "Add new contact"
     }
+
   },
 
   "$vuetify":
