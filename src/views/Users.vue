@@ -52,7 +52,8 @@ import FUserInfo from "@/components/FUserInfo"
       totalitems: 0,
       pagination: { rowsPerPage: 10},
       loading: false,
-      cultureInfo: 'en-US'
+      cultureInfo: 'en-US',
+      userOrigin: null
 }),
 
     components: {
@@ -126,19 +127,31 @@ import FUserInfo from "@/components/FUserInfo"
       },
 
       editItem (item) {
+        this.userOrigin = item
         this.$refs.fuserinfo.showForm(item)
       },
       
       accept(item)
       {
-          this.loading = true;
+        if (item.id != 0 && 
+          this.userOrigin.name == item.name &&
+          this.userOrigin.login == item.login &&
+          (this.userOrigin.password == item.password || item.password == null) &&
+          this.userOrigin.email == item.email &&
+          this.userOrigin.contacts == item.contacts &&
+          this.userOrigin.role == item.role)
+        {
+          return
+        }
 
-          api.update('userinfo', item).then((result) => {
-              this.fillusers()
-            }  
-          ).catch((e) => {
-            this.loading = false;
-          });
+        this.loading = true;
+
+        api.update('userinfo', item).then((result) => {
+            this.fillusers()
+          }  
+        ).catch((e) => {
+          this.loading = false;
+        });
       }
     }
   }

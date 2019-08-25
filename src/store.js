@@ -11,7 +11,8 @@ const store = new Vuex.Store({
     token: '',
     userinfo: null,
     partnerinfo: null,
-    contactinfo: null
+    contactinfo: null,
+    partnerfileinfo: null
   },
   getters: {
     LOGGEDIN: state => {
@@ -29,6 +30,9 @@ const store = new Vuex.Store({
     CONTACTINFO: state => {
       return state.contactinfo
     },
+    PARTNERFILEINFO: state => {
+      return state.partnerfileinfo
+    }
   },
   mutations: {
     SET_LOGGEDIN: (state, token) => {
@@ -46,7 +50,9 @@ const store = new Vuex.Store({
     SET_CONTACTINFO: (state, contactinfo) => {
       state.contactinfo = contactinfo
     },
-    
+    SET_PARTNERFILEINFO: (state, partnerfileinfo) => {
+      state.partnerfileinfo = partnerfileinfo
+    }
   },
   actions: {
     LOGIN: (context, token) => {

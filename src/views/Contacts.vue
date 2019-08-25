@@ -8,7 +8,7 @@
             <v-spacer></v-spacer>
             <v-toolbar-items>
               <span></span>
-              <v-btn dark flat text @click="dialog = false">Save</v-btn>
+              <v-btn dark flat text @click="dialog = false" class="success">Save</v-btn>
             </v-toolbar-items>
           </v-toolbar>
           <v-list three-line subheader>

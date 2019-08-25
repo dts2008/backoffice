@@ -48,12 +48,27 @@
     "add": "Add new client",
     "description": "Description",
     "contacts": "Contact",
+    "download": "Download",
+    "upload": "Upload",
     "statuses": {
       "new": "New",
       "inprocess": "In Process",
       "working": "Working",
       "rejected": "Rejected",
       "postponed": "Postponed"
+    },
+    "clientType": "Client Type",
+    "clientTypes": 
+    {
+      "platform": "Platform",
+      "agent": "Agent",
+      "operator": "Operator"
+    },
+    "currency": "Сurrency",
+    "currencies":{
+      "all": "All",
+      "fiat": "Fiat",
+      "crypto": "Crypto"
     },
     "contact": {
       "name": "Name",
@@ -66,8 +81,18 @@
       "delete": "Do you want to delete {name}?",
       "edit": "Edit contact #id: {id} ",
       "add": "Add new contact"
+    },
+    "files" : "Files",
+    "file": {
+      "name": "Name",
+      "delete": "Do you want to delete {name}?",
+      "edit": "Edit contact #id: {id} ",
+      "add": "Add new file",
+      "description": "Description",
+      "size": "Size",
+      "added": "Added",
+      "fileName": "File name"
     }
-
   },
 
   "$vuetify":

@@ -1,7 +1,7 @@
 <template>
 <div class="partners">
   <!-- <transition name="fade" v-if="edit" :duration="1000"> -->
-  <FPartnerInfo ref="fpartnerinfo" @accept="accept" @close="close" :item="currentItem" v-if="edit"/>
+  <FPartnerInfo ref="fpartnerinfo" @accept="accept" @close="close" :item="partnerOrigin" v-if="edit"/>
   <!-- </transition> -->
   <v-container v-else>
     <v-toolbar flat color="white">
@@ -62,7 +62,7 @@ import Contacts from '@/views/Contacts.vue'
       loading: false,
       cultureInfo: 'en-US',
       edit: false,
-      currentItem: null
+      partnerOrigin: null
     }),
 
     components: {
@@ -109,7 +109,6 @@ import Contacts from '@/views/Contacts.vue'
         if (status == 3) return this.$t('partners.statuses.rejected');
         if (status == 4) return this.$t('partners.statuses.postponed');
         
-        
         return this.$t('partners.statuses.new')
       },
 
@@ -143,7 +142,7 @@ import Contacts from '@/views/Contacts.vue'
       editItem (item) {
         //console.log('edit')
         //console.log(item)
-        this.currentItem = item
+        this.partnerOrigin = item
         this.edit = true
         //console.log(this.$refs)
         //console.log(this.$refs.fpartnerinfo)
@@ -157,6 +156,19 @@ import Contacts from '@/views/Contacts.vue'
       
       accept(item)
       {
+        if (item.id != 0 && item.name == this.partnerOrigin.name &&
+            item.website == this.partnerOrigin.website &&
+            item.manager == this.partnerOrigin.manager &&
+            item.added == this.partnerOrigin.added &&
+            item.status == this.partnerOrigin.status &&
+            item.description == this.partnerOrigin.description &&
+            item.clientType == this.partnerOrigin.clientType &&
+            item.currency == this.partnerOrigin.currency)
+        {
+          
+        }
+        else
+        {
           this.loading = true;
 
           api.update('partnerinfo', item).then((result) => {
@@ -165,8 +177,9 @@ import Contacts from '@/views/Contacts.vue'
           ).catch((e) => {
             //this.loading = false;
           });
+        }
 
-          this.edit = false
+        this.edit = false
       }
     }
   }

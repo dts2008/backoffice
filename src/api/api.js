@@ -79,8 +79,7 @@ class API {
             const result = await this.axios.post(this.apiHost + '/api2/update?type=' + type + '&token=' + store.getters.GETTOKEN, 
                 item, { headers: {'Content-Type': 'text/plain'} })
             
-                if (result && result.data.status === 'OK'
-                ) {
+                if (result && result.data.status === 'OK') {
                 return true;
             }
                         
@@ -91,23 +90,41 @@ class API {
         }
     }
 
-    async upload(file, id, options)
+    async upload(file, type, item)
     {
         let formData = new FormData();
-        formData.append('file', this.file);
-      
-        this.axios.post(this.apiHost + '/api2/upload?type=' + type + '&token=' + store.getters.GETTOKEN + '&id=' + id + '&options=' + JSON.stringify(options),
+        formData.append('file', file);
+
+        try {
+            const result = await this.axios.post(this.apiHost + '/api2/upload?type=' + type + '&token=' + store.getters.GETTOKEN + '&item=' + JSON.stringify(item),
                 formData, {
                   headers: {
                     'Content-Type': 'multipart/form-data'
                   }
                 }
-              ).then(function () {
-                console.log('SUCCESS!!');
-              })
-              .catch(function () {
-                console.log('FAILURE!!');
-              });
+              )
+              console.log('uploaded')
+              return true;
+        } catch (e) {
+            console.log(e);
+            return false;
+        }
+    }
+
+    download(type, id, fileName)
+    {
+        this.axios({
+            url: this.apiHost + '/api2/download?type=' + type + '&token=' + store.getters.GETTOKEN + '&id=' + id,
+            method: 'GET',
+            responseType: 'blob', // important
+          }).then((response) => {
+             const url = window.URL.createObjectURL(new Blob([response.data]));
+             const link = document.createElement('a');
+             link.href = url;
+             link.setAttribute('download', fileName); //or any other extension
+             document.body.appendChild(link);
+             link.click();
+          });
     }
 }
 
