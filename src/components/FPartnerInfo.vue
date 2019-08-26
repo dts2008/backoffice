@@ -20,8 +20,9 @@
           </v-toolbar>
 
                 <v-form class="px-3" ref="form" autocomplete="off">
-
+                    <!-- <span>&nbsp;</span> -->
                     <v-container>
+                    <!-- <v-container> -->
                         <v-layout row wrap>
                             <v-flex xs12 sm6 md4>
                                 <v-text-field :label="this.$t('partners.name')" v-model="partnerItem.name" prepend-icon="business" ></v-text-field>
@@ -33,21 +34,24 @@
                             <v-select :label="this.$t('partners.status')" v-model="partnerItem.status" :items="status" prepend-icon="history" item-text="name" item-value="value"></v-select>
                             </v-flex>
                         </v-layout>
-                    </v-container>
+                    <!-- </v-container> -->
 
-                    <v-container>
+                    <!-- <v-container> -->
                         <v-layout row wrap>
                             <v-flex xs12 sm6 md4>
-                                <v-select :label="this.$t('partners.clientType')" v-model="partnerItem.clientType" :items="clientTypes" prepend-icon="history" item-text="name" item-value="value"></v-select>
+                                <v-select :label="this.$t('partners.clientType')" v-model="partnerItem.clientType" :items="clientTypes" prepend-icon="face" item-text="name" item-value="value"></v-select>
                             </v-flex>
                             <v-flex  xs12 sm6 md4>
-                                <v-select :label="this.$t('partners.currency')" v-model="partnerItem.currency" :items="currencies" prepend-icon="coin" item-text="name" item-value="value"></v-select>
+                                <v-select :label="this.$t('partners.currency')" v-model="partnerItem.currency" :items="currencies" prepend-icon="attach_money" item-text="name" item-value="value"></v-select>
                             </v-flex>
                         </v-layout>
-                    </v-container>
+                    <!-- </v-container> -->
 
                     <v-textarea :label="this.$t('partners.description')" v-model="partnerItem.description"  prepend-icon="edit" ></v-textarea>
 
+                    </v-container>
+
+                    <div v-if="partnerItem.id != 0">
                     <v-toolbar flat color="white">
                     <v-toolbar-title>{{ $t('partners.contacts') }}</v-toolbar-title>
                     <v-divider class="mx-2" inset vertical></v-divider>
@@ -117,7 +121,7 @@
                             <v-btn color="primary" @click="fillFiles">{{ $t('refresh') }}</v-btn>
                         </template>
                     </v-data-table>
-
+                    </div>
                 </v-form>    
             <!-- </v-card-text> -->
         <!-- </v-card> -->

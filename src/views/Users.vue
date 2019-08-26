@@ -1,6 +1,6 @@
 <template>
 <div class="users">
-  <v-container >
+  <!-- <v-container > -->
     <v-toolbar flat color="white">
       <v-toolbar-title>{{ $t('pages.users') }}</v-toolbar-title>
       <v-divider class="mx-2" inset vertical></v-divider>
@@ -38,7 +38,7 @@
       </template>
     </v-data-table>
 
-  </v-container>
+  <!-- </v-container> -->
 
 </div>
 </template>

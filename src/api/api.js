@@ -32,11 +32,13 @@ class API {
         }
     }
 
-     async get(type, current_page, page_size, sort_by, descending, filters)
+     async get(type, current_page, page_size, sort_by, descending, filters, dependence)
     {
         try {
             const result = await this.axios.get(this.apiHost + '/api2/get?type=' + type + '&token=' + store.getters.GETTOKEN + 
-                '&page_size=' + page_size + '&current_page=' + current_page + '&sort_by=' + sort_by + '&descending=' + descending + "&filter=" + JSON.stringify(filters))
+                '&page_size=' + page_size + '&current_page=' + current_page + '&sort_by=' + sort_by + '&descending=' + descending + 
+                "&dependence=" + dependence + 
+                "&filter=" + JSON.stringify(filters))
 
             if (result &&
                 result.data &&

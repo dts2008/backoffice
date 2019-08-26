@@ -3,7 +3,7 @@
   <!-- <transition name="fade" v-if="edit" :duration="1000"> -->
   <FPartnerInfo ref="fpartnerinfo" @accept="accept" @close="close" :item="partnerOrigin" v-if="edit"/>
   <!-- </transition> -->
-  <v-container v-else>
+  <div v-else>
     <v-toolbar flat color="white">
       <v-toolbar-title>{{ $t('pages.partners') }}</v-toolbar-title>
       <v-divider class="mx-2" inset vertical></v-divider>
@@ -24,7 +24,7 @@
         <td>{{ props.item.id }}</td>
         <td class="text-xs-right">{{ props.item.name }}</td>
         <td class="text-xs-right">{{ props.item.website }}</td>
-        <td class="text-xs-right">{{ props.item.manager }}</td>
+        <td class="text-xs-right">{{ getManager(props.item.manager) }}</td>
         <td class="text-xs-right">{{ new Date(props.item.added*1000).toLocaleString(cultureInfo) }}</td>
         
         <td class="text-xs-right">
@@ -45,7 +45,7 @@
       </template>
     </v-data-table>
 
-  </v-container>
+  </div>
 
 </div>
 </template>
@@ -102,6 +102,21 @@ import Contacts from '@/views/Contacts.vue'
     },
 
     methods: {
+      getManager(manager){
+         const partner = this.$store.getters.PARTNERINFO;
+         if (partner && partner.dependence && partner.dependence.userinfo){
+            
+            let user = partner.dependence.userinfo.find(i => {
+              return i.id == manager
+            });
+
+            if (user)
+              return user.name
+         }
+
+          return ''
+      },
+
       getStatus(status)
       {
         if (status == 1) return this.$t('partners.statuses.inprocess'); 
@@ -117,7 +132,7 @@ import Contacts from '@/views/Contacts.vue'
         this.loading = true;
         const { sortBy, descending, page, rowsPerPage } = this.pagination
 
-        api.get('partnerinfo', page, rowsPerPage, sortBy, descending).then((result) => {
+        api.get('partnerinfo', page, rowsPerPage, sortBy, descending, null, 1).then((result) => {
               this.loading = false;
             }  
           ).catch((e) => {
