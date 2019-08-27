@@ -21,7 +21,8 @@
   "pages":{
     "partners": "Client",
     "users": "Users",
-    "contacts": "Contacts"
+    "contacts": "Contacts",
+    "help": "Help"
   },
 
   "users":{

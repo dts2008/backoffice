@@ -53,7 +53,6 @@
 <script>
 import api from '@/api/api'
 import FPartnerInfo from "@/components/FPartnerInfo"
-import Contacts from '@/views/Contacts.vue'
 
   export default {
     data: () => ({
@@ -66,8 +65,7 @@ import Contacts from '@/views/Contacts.vue'
     }),
 
     components: {
-        FPartnerInfo,
-        Contacts
+        FPartnerInfo
       },
 
     computed: {

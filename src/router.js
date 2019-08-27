@@ -4,7 +4,7 @@ import Partners from './views/Partners.vue'
 import Users from './views/Users.vue'
 import store from './store'
 import Login from '@/views/Login.vue'
-import Contacts from '@/views/Contacts.vue'
+import Help from '@/views/Help.vue'
 
 Vue.use(Router)
 
@@ -13,7 +13,7 @@ const router = new Router({
     { path: '/', name: 'Partners', component: Partners },
     { path: '/users', name: 'Users', component: Users },
     { path: '/login', name: 'login', component: Login },
-    { path: '/contacts', name: 'contacts', component: Contacts }
+    { path: '/help', name: 'help', component: Help }
   ]
 })
 

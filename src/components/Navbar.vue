@@ -91,8 +91,8 @@ export default {
         links() {
             return [
                 { icon: "account_box", text: this.$t('pages.partners'), route: "/"},
-                { icon: "folder", text: this.$t('pages.contacts'), route: "/contacts"},
                 { icon: "person", text: this.$t('pages.users'), route: "/users"},
+                { icon: "help", text: this.$t('pages.help'), route: "/help"}
             ]
         }
     },

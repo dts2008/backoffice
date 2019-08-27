@@ -15,7 +15,7 @@ class API {
     async authorization(login, password)
     {
         try {
-            const result = await this.axios.get(this.apiHost + '/api2/auth?login=' + login + 'password=' + this.md5(password))
+            const result = await this.axios.get(this.apiHost + '/api2/auth?login=' + login + '&password=' + this.md5(password))
 
             if (result &&
                 result.data &&
@@ -35,7 +35,7 @@ class API {
      async get(type, current_page, page_size, sort_by, descending, filters, dependence)
     {
         try {
-            const result = await this.axios.get(this.apiHost + '/api2/get?type=' + type + '&token=' + store.getters.GETTOKEN + 
+            const result = await this.axios.get(this.apiHost + '/api2/get?type=' + type + '&token=' + store.getters.TOKEN + 
                 '&page_size=' + page_size + '&current_page=' + current_page + '&sort_by=' + sort_by + '&descending=' + descending + 
                 "&dependence=" + dependence + 
                 "&filter=" + JSON.stringify(filters))
@@ -60,7 +60,7 @@ class API {
     async delete(type, item)
     {
         try {
-            const result = await this.axios.post(this.apiHost + '/api2/delete?type=' + type + '&token=' + store.getters.GETTOKEN, 
+            const result = await this.axios.post(this.apiHost + '/api2/delete?type=' + type + '&token=' + store.getters.TOKEN, 
                 {'id': item.id}, { headers: {'Content-Type': 'text/plain'} })
             
                 if (result && result.data.status === 'OK'
@@ -78,7 +78,7 @@ class API {
     async update(type, item)
     {
         try {
-            const result = await this.axios.post(this.apiHost + '/api2/update?type=' + type + '&token=' + store.getters.GETTOKEN, 
+            const result = await this.axios.post(this.apiHost + '/api2/update?type=' + type + '&token=' + store.getters.TOKEN, 
                 item, { headers: {'Content-Type': 'text/plain'} })
             
                 if (result && result.data.status === 'OK') {
@@ -98,7 +98,7 @@ class API {
         formData.append('file', file);
 
         try {
-            const result = await this.axios.post(this.apiHost + '/api2/upload?type=' + type + '&token=' + store.getters.GETTOKEN + '&item=' + JSON.stringify(item),
+            const result = await this.axios.post(`${this.apiHost}/api2/upload?type=${type}&token=${store.getters.TOKEN}&item=${JSON.stringify(item)}`,
                 formData, {
                   headers: {
                     'Content-Type': 'multipart/form-data'
@@ -116,7 +116,7 @@ class API {
     download(type, id, fileName)
     {
         this.axios({
-            url: this.apiHost + '/api2/download?type=' + type + '&token=' + store.getters.GETTOKEN + '&id=' + id,
+            url: this.apiHost + '/api2/download?type=' + type + '&token=' + store.getters.TOKEN + '&id=' + id,
             method: 'GET',
             responseType: 'blob', // important
           }).then((response) => {
