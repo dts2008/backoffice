@@ -1,6 +1,18 @@
 {
     "error" : {
         "loginIssue": "Логин или пароль не корректный",
+        "0": "",
+        "1": "Parameters issue. Please, check request parameters.",
+        "2": "Authorization issue. Please, check login or password.",
+        "3": "Authorization issue. Please, check time of request.",
+        "4": "Authorization issue. Please, check hash.",
+        "5": "Parameters issue. Please, check group_id.",
+        "6": "Parameters issue. Please, check game_id.",
+        "7": "Parameters issue. Please, check bets.",
+        "8": "Parameters issue. Please, check payout.",
+        "9": "Parameters issue. Wrong Id.",
+        "11": "Wrong request.",
+        "12": "Wrong or expired token.",    
         "100": "Внутренняя ошибка.",
         "10": "Пользователь с таким же логином уже существует"
     },

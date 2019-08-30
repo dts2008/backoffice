@@ -1,9 +1,9 @@
 <template>
     <nav>
         <!-- Tool tips -->
-        <v-snackbar v-model="snackbar" :timeout="2000" top color="success">
+        <v-snackbar v-model="snackbar" :timeout="2000" top color="error">
             <span>
-                Awesome! You added a new project
+                {{ $t('error.' + this.$store.getters.ERRORID) }}
             </span>
             <v-btn flat color="white" @click="snackbar = false">Close</v-btn>
         </v-snackbar>
@@ -78,7 +78,8 @@ export default {
             snackbar: false,
             languages: [{ flag: 'us', language: 'en', title: 'English' }, 
                         { flag: 'ru', language: 'ru', title: 'Русский' }
-            ]
+            ],
+            snackbar: false
         }
     },
     computed:
@@ -94,6 +95,10 @@ export default {
                 { icon: "person", text: this.$t('pages.users'), route: "/users"},
                 { icon: "help", text: this.$t('pages.help'), route: "/help"}
             ]
+        },
+
+        isError() {
+            return this.$store.getters.ISERROR
         }
     },
     methods: {
@@ -107,6 +112,19 @@ export default {
         logout()
         {
             this.$store.dispatch('LOGOUT');
+        }
+    },
+
+    watch: {
+    // whenever question changes, this function will run
+        isError: function (newError, oldError) {
+            if (newError)
+                this.snackbar = true;
+        },
+
+        snackbar: function (newSnackbar, oldSnackbar) {
+            if (!newSnackbar)
+                this.$store.commit('SET_ISERROR', false);
         }
     }
 }

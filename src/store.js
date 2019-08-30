@@ -12,7 +12,9 @@ const store = new Vuex.Store({
     userinfo: null,
     partnerinfo: null,
     contactinfo: null,
-    partnerfileinfo: null
+    partnerfileinfo: null,
+    isError: false,
+    errorId: 0
   },
   getters: {
     LOGGEDIN: state => {
@@ -32,6 +34,12 @@ const store = new Vuex.Store({
     },
     PARTNERFILEINFO: state => {
       return state.partnerfileinfo
+    },
+    ISERROR: state => {
+      return state.isError
+    },
+    ERRORID: state => {
+      return state.errorId
     }
   },
   mutations: {
@@ -52,6 +60,12 @@ const store = new Vuex.Store({
     },
     SET_PARTNERFILEINFO: (state, partnerfileinfo) => {
       state.partnerfileinfo = partnerfileinfo
+    },
+    SET_ISERROR: (state, isError) => {
+      state.isError = isError
+    },
+    SET_ERRORID: (state, errorId) => {
+      state.errorId = errorId
     }
   },
   actions: {
@@ -64,6 +78,10 @@ const store = new Vuex.Store({
     },
     LANGUAGE: (context, language) => {
       context.commit('SET_LANGUAGE', language)
+    },
+    SETERROR: (context, error) => {
+      context.commit('SET_ERRORID', error.error_id)
+      context.commit('SET_ISERROR', true)
     }
   }
 })

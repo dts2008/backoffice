@@ -25,7 +25,7 @@
                     <!-- <v-container> -->
                         <v-layout row wrap>
                             <v-flex xs12 sm6 md4>
-                                <v-text-field :label="this.$t('partners.name')" v-model="partnerItem.name" prepend-icon="business" ></v-text-field>
+                                <v-text-field :label="this.$t('partners.name')" v-model="partnerItem.name" prepend-icon="business" :rules="inputNameRules" ></v-text-field>
                             </v-flex>
                             <v-flex  xs12 sm6 md4>
                             <v-text-field :label="this.$t('partners.website')" v-model="partnerItem.website" prepend-icon="web" ></v-text-field>
@@ -177,7 +177,7 @@ export default {
                 this.partnerItem = Object.assign({}, this.item)//this.item;//Object.assign({}, partner)
             } 
             else {
-                this.partnerItem = { id: 0, name: '', website: '', manager: 0, added: 0, status: 1, description: '' }
+                this.partnerItem = { id: 0, name: '', website: '', manager: 0, added: 0, status: 0, description: '' }
             }
     },
     

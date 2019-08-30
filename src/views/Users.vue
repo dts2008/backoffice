@@ -22,8 +22,7 @@
         <td class="text-xs-right">{{ props.item.login }}</td>
         <td class="text-xs-right">{{ props.item.name }}</td>
         <td class="text-xs-right">{{ getRole(props.item.role) }}</td>
-        <td class="text-xs-right">{{ new Date(props.item.activity*1000).toLocaleString(cultureInfo) }}</td>
-        <td class="text-xs-right">{{ props.item.partners }}</td>
+        <td class="text-xs-right">{{ getActivity(props.item.activity) }}</td>
         <td class="justify-center layout px-0">
           <v-icon small class="mr-2" @click="editItem(props.item)">
             edit
@@ -81,7 +80,6 @@ import FUserInfo from "@/components/FUserInfo"
           { text: this.$t('name'), align: 'right', value: 'name' },
           { text: this.$t('role'), align: 'right', value: 'role' },
           { text: this.$t('lastActivity'), align: 'right', value: 'activity' },
-          { text: this.$t('users.partners'), align: 'right', value: 'partners' },
           { text: this.$t('actions'), align: 'center', value: 'name', sortable: false }
         ]
       }
@@ -92,6 +90,13 @@ import FUserInfo from "@/components/FUserInfo"
     },
 
     methods: {
+      getActivity(activity)
+      {
+        if (activity == 0) return '';
+
+        return new Date(activity*1000).toLocaleString(this.cultureInfo);
+      },
+
       getRole(role)
       {
         if (role == 1) return this.$t('users.roles.admin')
