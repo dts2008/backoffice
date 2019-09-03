@@ -19,9 +19,16 @@
             </v-toolbar-items>
           </v-toolbar>
 
-                <v-form class="px-3" ref="form" autocomplete="off">
+<v-tabs flat v-model="curentPage" >
+      <v-tab>Common Info</v-tab>
+		  <v-tab>{{ $t('partners.contacts') }}</v-tab>
+		  <v-tab>{{ $t('partners.files') }}</v-tab>
+      <v-tab>Events</v-tab>
+		
+	<v-tab-item>
+<v-form class="px-3" ref="form" autocomplete="off">
                     <!-- <span>&nbsp;</span> -->
-                    <v-container>
+                    <!-- <v-container> -->
                     <!-- <v-container> -->
                         <v-layout row wrap>
                             <v-flex xs12 sm6 md4>
@@ -49,12 +56,20 @@
 
                     <v-textarea :label="this.$t('partners.description')" v-model="partnerItem.description"  prepend-icon="edit" ></v-textarea>
 
-                    </v-container>
+                    <!-- </v-container>
 
                     <div v-if="partnerItem.id != 0">
-                    <v-toolbar flat color="white">
-                    <v-toolbar-title>{{ $t('partners.contacts') }}</v-toolbar-title>
-                    <v-divider class="mx-2" inset vertical></v-divider>
+                    
+
+                    
+                    </div> -->
+                </v-form>
+    </v-tab-item>
+
+	<v-tab-item>
+<v-toolbar flat color="white">
+                    <!-- <v-toolbar-title>{{ $t('partners.contacts') }}</v-toolbar-title> -->
+                    <!-- <v-divider class="mx-2" inset vertical></v-divider> -->
                     <v-spacer></v-spacer>
 
                     <v-btn color="primary" dark @click="fillcontacts">{{ $t('refresh') }}</v-btn>
@@ -84,11 +99,13 @@
                             <v-btn color="primary" @click="fillcontacts">{{ $t('refresh') }}</v-btn>
                         </template>
                     </v-data-table>
-
-                    <!-- Files -->
+    </v-tab-item>
+	
+    <v-tab-item>
+        <!-- Files -->
                     <v-toolbar flat color="white">
-                    <v-toolbar-title>{{ $t('partners.files') }}</v-toolbar-title>
-                    <v-divider class="mx-2" inset vertical></v-divider>
+                    <!-- <v-toolbar-title>{{ $t('partners.files') }}</v-toolbar-title> -->
+                    <!-- <v-divider class="mx-2" inset vertical></v-divider> -->
                     <v-spacer></v-spacer>
 
                     <v-btn color="primary" dark @click="fillFiles">{{ $t('refresh') }}</v-btn>
@@ -121,8 +138,14 @@
                             <v-btn color="primary" @click="fillFiles">{{ $t('refresh') }}</v-btn>
                         </template>
                     </v-data-table>
-                    </div>
-                </v-form>    
+    </v-tab-item>
+    
+    <v-tab-item>
+
+    </v-tab-item>
+	  </v-tabs>
+
+                    
             <!-- </v-card-text> -->
         <!-- </v-card> -->
     <!-- </v-dialog> -->
@@ -154,7 +177,8 @@ export default {
             fileTotal: 0,
             filePagination: { rowsPerPage: 10},
             fileLoading: false,
-            fileOrigin: {}
+            fileOrigin: {},
+            curentPage: 0
 
         }
     },
@@ -281,6 +305,7 @@ export default {
                 //this.show = false
                 this.$emit('accept', this.partnerItem)
             }
+            else this.curentPage = 0
         },
         
         close() {
@@ -292,6 +317,7 @@ export default {
         },
 
         showForm(partner) {
+            this.curentPage = 0
             if (partner) {
                 this.partnerItem = Object.assign({}, partner)
             } 
