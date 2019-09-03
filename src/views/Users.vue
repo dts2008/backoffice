@@ -52,7 +52,8 @@ import FUserInfo from "@/components/FUserInfo"
       pagination: { rowsPerPage: 10},
       loading: false,
       cultureInfo: 'en-US',
-      userOrigin: null
+      userOrigin: null,
+      md5: null
 }),
 
     components: {
@@ -86,6 +87,7 @@ import FUserInfo from "@/components/FUserInfo"
     },
 
     created () {
+      this.md5 = require('md5');
       this.cultureInfo = window.navigator.userLanguage || window.navigator.language
     },
 
@@ -150,6 +152,10 @@ import FUserInfo from "@/components/FUserInfo"
         }
 
         this.loading = true;
+        if (item.id == 0 || this.userOrigin.password != item.password)
+        {
+          item.password = this.md5(item.password)
+        }
 
         api.update('userinfo', item).then((result) => {
             this.fillusers()
