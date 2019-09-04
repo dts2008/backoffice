@@ -26,7 +26,7 @@
       <v-tab>Events</v-tab>
 		
 	<v-tab-item>
-<v-form class="px-3" ref="form" autocomplete="off">
+<v-form class="px-5 mt-5" ref="form" autocomplete="off">
                     <!-- <span>&nbsp;</span> -->
                     <!-- <v-container> -->
                     <!-- <v-container> -->
