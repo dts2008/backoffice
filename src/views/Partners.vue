@@ -22,13 +22,18 @@
     <v-data-table :headers="headers" :items="partners" :loading="loading" :total-items="totalitems" :pagination.sync="pagination" @update:pagination="fillpartners">
       <template v-slot:items="props">
         <td>{{ props.item.id }}</td>
+        <td class="text-xs-right">{{ clientType(props.item.clientType) }}</td>
         <td class="text-xs-right">{{ props.item.name }}</td>
         <td class="text-xs-right">{{ props.item.website }}</td>
-        <td class="text-xs-right">{{ getManager(props.item.manager) }}</td>
-        <td class="text-xs-right">{{ getDateTime(props.item.added) }}</td>
-        
+        <!-- <td class="text-xs-right">{{ getManager(props.item.manager) }}</td> -->
+        <!-- <td class="text-xs-right">{{ getDateTime(props.item.added) }}</td> -->
         <td class="text-xs-right">
         <v-chip small :class="`partners status${props.item.status}`">{{ getStatus(props.item.status) }}</v-chip>
+        <!-- <div v-if="partnerItem.id != 0"> -->
+          <v-icon color="red" v-if="getStatusIcon(props.item)">warning</v-icon>
+        <!-- </div> -->
+        <td class="text-xs-right">{{ props.item.description.substring(0, 64) }}</td>
+        
         </td>
         
         <td class="justify-center layout px-0">
@@ -85,11 +90,12 @@ import FPartnerInfo from "@/components/FPartnerInfo"
       headers() {
         return [
           { text: '#Id', align: 'left', value: 'id' },
+          { text: this.$t('partners.clientType'), align: 'right', value: 'clientType' },
           { text: this.$t('partners.name'), align: 'right', value: 'name' },
           { text: this.$t('partners.website'), align: 'right', value: 'website' },
-          { text: this.$t('partners.manager'), align: 'right', value: 'manager' },
-          { text: this.$t('partners.added'), align: 'right', value: 'added' },
+          // { text: this.$t('partners.manager'), align: 'right', value: 'manager' },
           { text: this.$t('partners.status'), align: 'right', value: 'status' },
+          { text: this.$t('partners.description'), align: 'right', value: 'description' },
           { text: this.$t('actions'), align: 'center', value: 'name', sortable: false }
         ]
       }
@@ -100,6 +106,22 @@ import FPartnerInfo from "@/components/FPartnerInfo"
     },
 
     methods: {
+      clientType(value)
+      {
+        if (value == 0) return this.$t('partners.clientTypes.platform')
+        if (value == 1) return this.$t('partners.clientTypes.agent')
+        if (value == 2) return this.$t('partners.clientTypes.operator')
+
+        return ''
+      },
+
+      getStatusIcon(item)
+      {
+        if (item.status == 2 || item.status == 3 || item.nextContact == 0) return false;
+        
+        return item.nextContact <= new Date().getTime() / 1000;
+      },
+
       getDateTime(value)
       {
         if (value == 0) return '';
@@ -183,7 +205,8 @@ import FPartnerInfo from "@/components/FPartnerInfo"
             item.status == this.partnerOrigin.status &&
             item.description == this.partnerOrigin.description &&
             item.clientType == this.partnerOrigin.clientType &&
-            item.currency == this.partnerOrigin.currency)
+            item.currency == this.partnerOrigin.currency &&
+            item.nextContact == this.partnerOrigin.nextContact)
         {
           
         }
