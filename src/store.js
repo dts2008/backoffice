@@ -14,7 +14,8 @@ const store = new Vuex.Store({
     contactinfo: null,
     partnerfileinfo: null,
     isError: false,
-    errorId: 0
+    errorId: 0,
+    eventinfo: null
   },
   getters: {
     LOGGEDIN: state => {
@@ -40,6 +41,9 @@ const store = new Vuex.Store({
     },
     ERRORID: state => {
       return state.errorId
+    },
+    EVENTINFO: state => {
+      return state.eventinfo
     }
   },
   mutations: {
@@ -66,7 +70,10 @@ const store = new Vuex.Store({
     },
     SET_ERRORID: (state, errorId) => {
       state.errorId = errorId
-    }
+    },
+    SET_EVENTINFO: (state, eventinfo) => {
+      state.eventinfo = eventinfo
+    },
   },
   actions: {
     LOGIN: (context, token) => {

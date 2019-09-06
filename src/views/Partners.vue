@@ -25,7 +25,7 @@
         <td class="text-xs-right">{{ props.item.name }}</td>
         <td class="text-xs-right">{{ props.item.website }}</td>
         <td class="text-xs-right">{{ getManager(props.item.manager) }}</td>
-        <td class="text-xs-right">{{ getActivity(props.item.added*1000) }}</td>
+        <td class="text-xs-right">{{ getDateTime(props.item.added) }}</td>
         
         <td class="text-xs-right">
         <v-chip small :class="`partners status${props.item.status}`">{{ getStatus(props.item.status) }}</v-chip>
@@ -100,11 +100,11 @@ import FPartnerInfo from "@/components/FPartnerInfo"
     },
 
     methods: {
-      getActivity(activity)
+      getDateTime(value)
       {
-        if (activity == 0) return '';
+        if (value == 0) return '';
 
-        return new Date(activity*1000).toLocaleString(this.cultureInfo);
+        return new Date(value*1000).toLocaleString(this.cultureInfo);
       },
 
       getManager(manager){

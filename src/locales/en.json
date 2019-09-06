@@ -51,6 +51,7 @@
   },
 
   "partners": {
+    "nextContact": "Next Contact",
     "added": "Added",
     "website": "Web site",
     "manager": "Manager",
@@ -105,6 +106,16 @@
       "size": "Size",
       "added": "Added",
       "fileName": "File name"
+    },
+    "commonInfo": "Common Info",
+    "events": "Events",
+    "event": {
+      "edit": "Edit event #id: {id} ",
+      "add": "Add event",
+      "contact": "Contact",
+      "contactType": "Contact Type",
+      "description": "Description",
+      "eventtime": "Event Time"
     }
   },
 

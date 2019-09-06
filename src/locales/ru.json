@@ -51,6 +51,7 @@
     },
 
     "partners":{
+      "nextContact": "Следующиq контакт",
       "added": "Добавленно",
       "website": "Web site",
       "manager": "Менеджер",
@@ -105,6 +106,16 @@
         "size": "Размер",
         "added": "Добавлен",
         "fileName": "Название файла"
+      },
+      "commonInfo": "Общая Информация",
+      "events": "События",
+      "event": {
+        "edit": "Редактирование событие #id: {id} ",
+        "add": "Добавить событие",
+        "contact": "Контакт",
+        "contactType": "Тип контакта",
+        "description": "Описание",
+        "eventtime": "Время События"
       }
     },
 

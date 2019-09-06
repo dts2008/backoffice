@@ -5,9 +5,10 @@
         <!-- <v-card-text > -->
         <FContactInfo ref="fcontactinfo" @accept="acceptContact"/>
         <FPartnerFileInfo ref="fpartnerfileinfo" @accept="acceptFile"/>
+        <FEventInfo ref="feventinfo" @accept="acceptEvent"/>
         
 
-        <v-toolbar dark color="primary">
+        <v-toolbar dark dense color="primary">
             <v-btn icon dark @click="close">
               <v-icon>close</v-icon>
             </v-btn>
@@ -19,11 +20,11 @@
             </v-toolbar-items>
           </v-toolbar>
 
-<v-tabs flat v-model="curentPage" >
-      <v-tab>Common Info</v-tab>
-		  <v-tab>{{ $t('partners.contacts') }}</v-tab>
-		  <v-tab>{{ $t('partners.files') }}</v-tab>
-      <v-tab>Events</v-tab>
+<v-tabs flat v-model="currentPage" >
+      <v-tab>{{ $t('partners.commonInfo') }}</v-tab>
+		  <v-tab :disabled="partnerItem == null || partnerItem.id == 0">{{ $t('partners.contacts') }}</v-tab>
+		  <v-tab :disabled="partnerItem == null || partnerItem.id == 0">{{ $t('partners.files') }}</v-tab>
+          <v-tab :disabled="partnerItem == null || partnerItem.id == 0">{{ $t('partners.events') }}</v-tab>
 		
 	<v-tab-item>
 <v-form class="px-5 mt-5" ref="form" autocomplete="off">
@@ -51,8 +52,19 @@
                             <v-flex  xs12 sm6 md4>
                                 <v-select :label="this.$t('partners.currency')" v-model="partnerItem.currency" :items="currencies" prepend-icon="attach_money" item-text="name" item-value="value"></v-select>
                             </v-flex>
+
+                            <v-flex  xs12 sm6 md4>
+                                <v-menu  ref="menu" v-model="nextContactMenu" :close-on-content-click="false" :nudge-right="40" lazytransition="scale-transition" offset-y full-width min-width="290px" >
+                                    <template v-slot:activator="{ on }">
+                                    <v-text-field :disabled="partnerItem.status == 2 || partnerItem.status == 3" :value="computedEventFormatted" :label="nextContactTitle" prepend-icon="event" readonly v-on="on"></v-text-field>
+                                    </template>
+                                <v-date-picker v-model="nextContactDate" @input="nextContactMenu = false"></v-date-picker>
+                            </v-menu>
+                            </v-flex>
                         </v-layout>
                     <!-- </v-container> -->
+
+                    
 
                     <v-textarea :label="this.$t('partners.description')" v-model="partnerItem.description"  prepend-icon="edit" ></v-textarea>
 
@@ -118,7 +130,7 @@
                             <td class="text-xs-right">{{ props.item.name }}</td>
                             <td class="text-xs-right">{{ props.item.description }}</td>
                             <td class="text-xs-right">{{ props.item.size }}</td>
-                            <td class="text-xs-right">{{ new Date(props.item.added*1000).toLocaleString(cultureInfo) }}</td>
+                            <td class="text-xs-right">{{ getDateTime(props.item.added) }}</td>
 
                             
                             
@@ -141,7 +153,34 @@
     </v-tab-item>
     
     <v-tab-item>
+        <v-toolbar flat color="white">
+                    <v-spacer></v-spacer>
 
+                    <v-btn color="primary" dark @click="fillEvents">{{ $t('refresh') }}</v-btn>
+                    <v-btn color="primary" dark class="success" @click="editEvent ()">{{ $t('add') }}</v-btn>
+                    </v-toolbar>
+
+                    <v-data-table :headers="eventHeaders" :items="events" :loading="eventLoading" :total-items="eventTotal" :pagination.sync="eventPagination" @update:pagination="fillEvents">
+                        <template v-slot:items="props">
+                            <td>{{ props.item.id }}</td>
+                            <td class="text-xs-right">{{ getContact(props.item.contactid) }}</td>
+                            <td class="text-xs-left">{{ contactType(props.item) }}</td>
+                            <td class="text-xs-right">{{ getDate(props.item.eventtime) }}</td>
+                            <td class="text-xs-right">{{ props.item.description.substring(0, 64) }}</td>
+                            
+                            <td class="justify-center layout px-0">
+                            <v-icon small class="mr-2" @click="editEvent(props.item)">
+                                edit
+                            </v-icon>
+                            <v-icon small @click="deleteEvent(props.item)">
+                                delete
+                            </v-icon>
+                            </td>
+                        </template>
+                        <template v-slot:no-data>
+                            <v-btn color="primary" @click="fillEvents">{{ $t('refresh') }}</v-btn>
+                        </template>
+                    </v-data-table>
     </v-tab-item>
 	  </v-tabs>
 
@@ -157,6 +196,7 @@ import api from '@/api/api'
 import FContactInfo from '@/components/FContactInfo.vue'
 import FPartnerFileInfo from '@/components/FPartnerFileInfo.vue'
 import UploadButton from '@/components/UploadButton.vue'
+import FEventInfo from '@/components/FEventInfo.vue'
 
 
 export default {
@@ -178,15 +218,23 @@ export default {
             filePagination: { rowsPerPage: 10},
             fileLoading: false,
             fileOrigin: {},
-            curentPage: 0
 
+            eventTotal: 0,
+            eventPagination: { rowsPerPage: 10},
+            eventLoading: false,
+            eventOrigin: {},
+            currentPage: 0,
+
+            nextContactMenu: false,
+            nextContactDate: null
         }
     },
 
     components: {
         FContactInfo,
         FPartnerFileInfo,
-        UploadButton
+        UploadButton,
+        FEventInfo
       },
 
     props: {
@@ -201,11 +249,25 @@ export default {
                 this.partnerItem = Object.assign({}, this.item)//this.item;//Object.assign({}, partner)
             } 
             else {
-                this.partnerItem = { id: 0, name: '', website: '', manager: 0, added: 0, status: 0, description: '' }
+                this.partnerItem = { id: 0, name: '', website: '', manager: 0, added: 0, status: 0, description: '', nextContact: 0 }
             }
+        
+        this.nextContactDate = new Date(this.partnerItem.nextContact*1000).toISOString().substr(0, 10)
     },
     
     computed:{
+        nextContactTitle()
+        {
+            return this.$t('partners.nextContact');
+        },
+
+        computedEventFormatted () {
+            if (this.nextContactDate)
+                return new Date(this.nextContactDate).toLocaleDateString(this.cultureInfo);
+            
+            return new Date().toLocaleDateString(this.cultureInfo);
+        },
+
         contactHeaders() {
         return [
           { text: '#Id', align: 'left', value: 'id' },
@@ -229,6 +291,29 @@ export default {
             }
 
             return []
+        },
+
+        events () {
+            const eventinfo = this.$store.getters.EVENTINFO;
+            if (eventinfo && eventinfo.items)
+            {
+                this.totalitems = eventinfo.total_items
+
+                return eventinfo.items;
+            }
+
+            return []
+        },
+
+        eventHeaders() {
+            return [
+                { text: '#Id', align: 'left', value: 'id' },
+                { text: this.$t('partners.event.contact'), align: 'right', value: 'contactid' },
+                { text: this.$t('partners.event.contactType'), align: 'right', value: 'contactType' },
+                { text: this.$t('partners.event.eventtime'), align: 'right', value: 'eventtime' },
+                { text: this.$t('partners.event.description'), align: 'right', value: 'description' },
+                { text: this.$t('actions'), align: 'center', value: 'name', sortable: false }
+            ]
         },
 
         fileHeaders() {
@@ -300,12 +385,74 @@ export default {
     }
     ,
     methods: {
+        getContactById (contactid) {
+            const contactinfo = this.$store.getters.CONTACTINFO;
+            if (contactinfo && contactinfo.items)
+            {
+                const contact = contactinfo.items.find(i => {
+                    return i.id == contactid
+                });
+
+                return contact
+            };
+
+            return null
+        },
+
+        contactType(value) {
+
+            let contact = this.getContactById(value.contactid)
+
+            if (contact == null) return ''
+
+            if (value.contactType == 1) return this.$t('partners.contact.email') + ': ' + contact.email;
+            if (value.contactType == 2) return this.$t('partners.contact.phone') + ': ' + contact.phone;
+            if (value.contactType == 3) return this.$t('partners.contact.skype') + ': ' + contact.skype;
+            if (value.contactType == 4) return this.$t('partners.contact.telegram') + ': ' + contact.telegram;
+            if (value.contactType == 5) return this.$t('partners.contact.whatsapp') + ': ' +  contact.whatsapp;
+
+            return ''
+        },
+
+        getContact(value)
+        {
+            if (value == null || value == 0) return '';
+
+            const contacts = this.$store.getters.CONTACTINFO;
+            if (contacts && contacts.items){
+                
+                let contact = contacts.items.find(i => {
+                return i.id == value
+                });
+
+                if (contact)
+                    return contact.name
+            }
+
+            return '';
+        },
+
+        getDateTime(value)
+        {
+            if (value == 0) return '';
+
+            return new Date(value*1000).toLocaleString(this.cultureInfo);
+        },
+
+        getDate(value)
+        {
+            if (value == 0) return '';
+
+            return new Date(value*1000).toLocaleDateString(this.cultureInfo);
+        },
+
         submit() {
             if (this.$refs.form.validate()) {   
                 //this.show = false
+                this.partnerItem.nextContact =  Math.trunc(new Date(this.nextContactDate).getTime() / 1000)
                 this.$emit('accept', this.partnerItem)
             }
-            else this.curentPage = 0
+            else this.currentPage = 0
         },
         
         close() {
@@ -317,7 +464,7 @@ export default {
         },
 
         showForm(partner) {
-            this.curentPage = 0
+            this.currentPage = 0
             if (partner) {
                 this.partnerItem = Object.assign({}, partner)
             } 
@@ -405,7 +552,7 @@ export default {
       
         acceptFile(item, file)
         {
-            item.partnerId = this.partnerItem.id;
+            item.partnerid = this.partnerItem.id;
             
             if (item.id != 0 && file == null)
             {
@@ -416,6 +563,7 @@ export default {
 
                 api.update('partnerfileinfo', item).then((result) => {
                     this.fillFiles()
+                    this.loading = false;
                     }  
                 ).catch((e) => {
                     this.loading = false;
@@ -458,8 +606,65 @@ export default {
         downloadFiles(item)
         {
             api.download('partnerfileinfo', item.id, item.name)
-        }
+        },
 
+        // events
+        fillEvents()
+        {
+            this.loading = true;
+            const { sortBy, descending, page, rowsPerPage } = this.eventPagination
+
+            api.get('eventinfo', page, rowsPerPage, sortBy, descending, [{"name":"partnerid","value":this.partnerItem.id,"type":0}]).then((result) => {
+                this.loading = false;
+                }  
+            ).catch((e) => {
+                this.loading = false;
+            });
+        },
+
+        editEvent(item) {
+            this.eventOrigin = item
+            this.$refs.feventinfo.showForm(item)
+        },
+      
+        acceptEvent(item, file)
+        {
+            item.partnerid = this.partnerItem.id;
+            
+            if (item.id != 0 && this.eventOrigin.contactId == item.contactId &&
+                this.eventOrigin.contactType == item.contactType &&
+                this.eventOrigin.eventtime == item.eventtime &&
+                this.eventOrigin.description == item.description)
+            {
+                return;
+            }
+
+            this.loading = true;
+
+            api.update('eventinfo', item).then((result) => {
+                this.fillEvents()
+                this.loading = false;
+                }  
+            ).catch((e) => {
+                console.log(e);
+                this.loading = false;
+            });
+        },
+
+        deleteEvent(item)
+        {
+            if (confirm(this.$t('partners.file.delete', { name: item.name })))
+            {
+                this.loading = true;
+
+                api.delete('eventinfo', item).then((result) => {
+                    this.fillEvents()
+                    }  
+                ).catch((e) => {
+                    this.loading = false;
+                });
+            }
+        },
     }
 }
 </script>
