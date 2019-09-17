@@ -11,7 +11,7 @@
           <v-flex xs12 sm8 md4>
             <v-form @submit.prevent="authenticate()" ref="form">
                 <v-card class="elevation-12">
-                <v-toolbar dark color="primary">
+                <v-toolbar dark color="blue-grey darken-1">
                     <v-toolbar-title>Login form</v-toolbar-title>
                     <v-spacer></v-spacer>
                 </v-toolbar>
@@ -21,7 +21,7 @@
                 </v-card-text>
                 <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn color="primary" type="submit" :loading="loading">Login</v-btn>
+                    <v-btn color="blue-grey darken-1" type="submit" :loading="loading">Login</v-btn>
                 </v-card-actions>
                 </v-card>
             </v-form>

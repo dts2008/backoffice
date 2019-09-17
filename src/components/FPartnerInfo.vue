@@ -8,7 +8,7 @@
         <FEventInfo ref="feventinfo" @accept="acceptEvent"/>
         
 
-        <v-toolbar dark dense color="primary">
+        <v-toolbar dark dense color="blue-grey darken-1">
             <v-btn icon dark @click="close">
               <v-icon>close</v-icon>
             </v-btn>
